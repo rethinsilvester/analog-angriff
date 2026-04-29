@@ -1,26 +1,32 @@
-# Analog Angriff — DIY Guitar Pedal Kits
+# Analog Angriff v2 — DIY Guitar Pedal Kits
 
-A minimal Next.js storefront for selling guitar pedal kits in India, with UPI QR checkout.
+Dark navy industrial design matching the 10Web aesthetic. Zero monthly cost.
 
-## Deploy to Vercel
+## Quick Deploy to Vercel
 
-1. Push this folder to a new GitHub repo
-2. Go to [vercel.com/new](https://vercel.com/new)
-3. Import the repo → Vercel auto-detects Next.js → Click **Deploy**
-4. Add your custom domain `analogangriff.com` in Project Settings → Domains
+1. Create a new repo at github.com/new → name it `analog-angriff`
+2. Push this code:
+   ```bash
+   git init && git add . && git commit -m "v2 launch"
+   git branch -M main
+   git remote add origin https://github.com/YOUR_USERNAME/analog-angriff.git
+   git push -u origin main
+   ```
+3. Go to vercel.com/new → Import the repo → Deploy
+4. Add domain: Project Settings → Domains → `analogangriff.com`
 
 ## Customize
 
-- **UPI QR**: Replace the placeholder in the checkout section of `app/page.js` with your actual QR image (place it in `/public/upi-qr.png`)
-- **WhatsApp number**: Search for `91XXXXXXXXXX` in `app/page.js` and replace with your number
-- **Products**: Edit the `PRODUCTS` array at the top of `app/page.js`
-- **Product images**: Replace emoji placeholders with real images in `/public/`
+- **UPI QR**: Replace placeholder in checkout with your QR image (put in `/public/upi-qr.png`)
+- **WhatsApp**: Search `91XXXXXXXXXX` → replace with your number
+- **Products**: Edit `PRODUCTS` array in `app/page.js`
+- **Product images**: Replace `PedalGraphic` components with `<img>` tags pointing to `/public/` images
 
-## Local Development
+## Local Dev
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open http://localhost:3000
