@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: #0a0a0a; color: #fff; }
+::selection { background: #ff9900; color: #000; }
+
+input:focus, textarea:focus {
+  border-color: rgba(255,153,0,0.4) !important;
+  outline: none;
+}
+
+.desktop-nav { display: flex; }
+.mobile-nav { display: none; }
+
+@media (max-width: 640px) {
+  .desktop-nav { display: none !important; }
+  .mobile-nav { display: flex !important; align-items: center; }
+}
