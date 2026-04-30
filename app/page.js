@@ -105,10 +105,14 @@ const hdg = { fontFamily: sans, fontWeight: 600, color: C.white, textTransform: 
 const btnO = { fontFamily: mono, fontSize: 12, letterSpacing: "3px", textTransform: "uppercase", padding: "14px 32px", background: "transparent", color: C.white, border: `1px solid ${C.border}`, cursor: "pointer", transition: "all 0.3s" };
 
 /* ══ NAV ══ */
-function Nav({ cartCount, page, setPage }) {
+function Nav({ cartCount, page, setPage, onSearch }) {
   const [scrolled, setScrolled] = useState(false);
   const [mob, setMob] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState("");
+  const searchRef = useRef(null);
   useEffect(() => { const h = () => setScrolled(window.scrollY > 50); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
+  useEffect(() => { if (searchOpen && searchRef.current) searchRef.current.focus(); }, [searchOpen]);
 
   const nl = (k, l, style = {}) => <button key={k} onClick={() => { setPage(k); setMob(false); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: mono, letterSpacing: "2px", textTransform: "uppercase", color: page === k ? C.white : C.textMuted, padding: "4px 0", transition: "color 0.3s", ...style }}>{l}</button>;
 
@@ -144,9 +148,16 @@ function Nav({ cartCount, page, setPage }) {
           {nl("forum", "Forum", subLinkStyle)}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          <div onClick={() => setPage("shop")} style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${C.border}`, borderRadius: 4, padding: "5px 14px", cursor: "pointer" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${searchOpen ? C.borderLight : C.border}`, borderRadius: 4, padding: "5px 14px", cursor: "pointer", background: searchOpen ? C.bgCard : "transparent", transition: "all 0.3s", minWidth: searchOpen ? 220 : "auto" }}>
             <Icon name="search" size={14} />
-            <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>Search...</span>
+            {searchOpen ? (
+              <input ref={searchRef} value={searchVal} onChange={e => setSearchVal(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && searchVal.trim()) { onSearch(searchVal.trim()); setSearchOpen(false); setSearchVal(""); } if (e.key === "Escape") { setSearchOpen(false); setSearchVal(""); } }}
+                onBlur={() => { if (!searchVal) setSearchOpen(false); }}
+                placeholder="Search circuits..." style={{ background: "none", border: "none", outline: "none", color: C.white, fontFamily: mono, fontSize: 12, width: "100%" }} />
+            ) : (
+              <span onClick={() => setSearchOpen(true)} style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>Search...</span>
+            )}
           </div>
           <button onClick={() => setPage("cart")} style={{ background: "none", border: "none", cursor: "pointer", position: "relative", padding: 4, display: "flex", alignItems: "center", gap: 8 }}>
             <Icon name="cart" size={20} />
@@ -189,7 +200,7 @@ function Hero({ setPage }) {
           <button onClick={() => setPage("about")} style={btnO}>OUR STORY</button>
         </div>
       </div>
-      <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+      <div onClick={() => document.getElementById("featured")?.scrollIntoView({ behavior: "smooth" })} style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, cursor: "pointer", opacity: 0.6, transition: "opacity 0.3s" }} onMouseOver={e => e.currentTarget.style.opacity = 1} onMouseOut={e => e.currentTarget.style.opacity = 0.6}>
         <span style={{ ...lbl, fontSize: 9, letterSpacing: "4px" }}>EXPLORE GEAR</span>
         <Icon name="arrowDown" size={18} />
       </div>
@@ -228,7 +239,7 @@ function FeaturedRow({ title, products, addToCart }) {
 
 function HomeFeatured({ addToCart }) {
   return (
-    <section style={{ padding: "60px clamp(16px,4vw,48px)", maxWidth: 1200, margin: "0 auto" }}>
+    <section id="featured" style={{ padding: "60px clamp(16px,4vw,48px)", maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ display: "flex", alignItems: "stretch", gap: 16, marginBottom: 48 }}>
         <div style={{ width: 3, background: C.white }} />
         <div>
@@ -298,8 +309,8 @@ function Rad({ checked, onChange, label: l }) {
 }
 
 /* ══ SHOP ══ */
-function ShopPage({ addToCart, initialType = "" }) {
-  const [search, setSearch] = useState("");
+function ShopPage({ addToCart, initialType = "", initialSearch = "" }) {
+  const [search, setSearch] = useState(initialSearch);
   const [eCat, setECat] = useState([]);
   const [tFilt, setTFilt] = useState(initialType ? [initialType] : []);
   const [diff, setDiff] = useState("Any");
@@ -638,6 +649,9 @@ export default function Home() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState({ msg: "", visible: false });
+  const [navSearch, setNavSearch] = useState("");
+  const handleSearch = (term) => { setNavSearch(term); setPage("shop"); };
+  const handleSetPage = (p) => { if (p !== "shop" && p !== "pcbs" && p !== "kits" && p !== "components") setNavSearch(""); setPage(p); };
   const showToast = m => { setToast({ msg: m, visible: true }); setTimeout(() => setToast({ msg: "", visible: false }), 2200); };
   const addToCart = p => { setCart(prev => { const e = prev.find(i => i.product.id === p.id); if (e) return prev.map(i => i.product.id === p.id ? { ...i, qty: i.qty + 1 } : i); return [...prev, { product: p, qty: 1 }]; }); showToast(`${p.name} added`); };
   const updateQty = (id, q) => { if (q < 1) setCart(p => p.filter(i => i.product.id !== id)); else setCart(p => p.map(i => i.product.id === id ? { ...i, qty: q } : i)); };
@@ -655,12 +669,12 @@ export default function Home() {
         .dn{display:flex}.mn{display:none!important}.mfb{display:none}.ms{display:none}
         @media(max-width:768px){.dn{display:none!important}.mn{display:flex!important}.sg{grid-template-columns:1fr!important}.sb{display:none!important}.mfb{display:block!important}.ms{display:flex!important}}
       `}</style>
-      <Nav cartCount={cc} page={page} setPage={setPage} />
+      <Nav cartCount={cc} page={page} setPage={handleSetPage} onSearch={handleSearch} />
       <Toast message={toast.msg} visible={toast.visible} />
-      {page === "home" && <><Hero setPage={setPage} /><HomeFeatured addToCart={addToCart} /><SignalPath /></>}
-      {(page === "shop" || page === "pcbs" || page === "kits" || page === "components") && <ShopPage addToCart={addToCart} initialType={page === "pcbs" ? "PCB" : page === "kits" ? "Full Kit" : page === "components" ? "Components" : ""} />}
-      {page === "cart" && <CartPage cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} setPage={setPage} />}
-      {page === "checkout" && <CheckoutPage cart={cart} setPage={setPage} />}
+      {page === "home" && <><Hero setPage={handleSetPage} /><HomeFeatured addToCart={addToCart} /><SignalPath /></>}
+      {(page === "shop" || page === "pcbs" || page === "kits" || page === "components") && <ShopPage addToCart={addToCart} initialType={page === "pcbs" ? "PCB" : page === "kits" ? "Full Kit" : page === "components" ? "Components" : ""} initialSearch={navSearch} />}
+      {page === "cart" && <CartPage cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} setPage={handleSetPage} />}
+      {page === "checkout" && <CheckoutPage cart={cart} setPage={handleSetPage} />}
       {page === "about" && <AboutPage />}
       {page === "contact" && <ContactPage />}
       {page === "forum" && <Placeholder title="FORUM" desc="Community discussion board for builders across India. Share your builds, ask questions, help others. Coming soon." />}
