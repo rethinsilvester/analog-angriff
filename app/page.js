@@ -109,26 +109,67 @@ function Nav({ cartCount, page, setPage }) {
   const [scrolled, setScrolled] = useState(false);
   const [mob, setMob] = useState(false);
   useEffect(() => { const h = () => setScrolled(window.scrollY > 50); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
-  const nl = (k, l) => <button key={k} onClick={() => { setPage(k); setMob(false); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: mono, fontSize: 12, letterSpacing: "2.5px", textTransform: "uppercase", color: page === k ? C.white : C.textMuted, padding: "4px 0" }}>{l}</button>;
+
+  const nl = (k, l, style = {}) => <button key={k} onClick={() => { setPage(k); setMob(false); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: mono, letterSpacing: "2px", textTransform: "uppercase", color: page === k ? C.white : C.textMuted, padding: "4px 0", transition: "color 0.3s", ...style }}>{l}</button>;
+
+  const topLinkStyle = { fontSize: 11, letterSpacing: "1.5px" };
+  const subLinkStyle = { fontSize: 12, letterSpacing: "2.5px", fontWeight: page ? 400 : 400 };
+
   return (
-    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, padding: "0 clamp(16px,4vw,48px)", height: 64, background: scrolled ? "rgba(21,26,37,0.97)" : "rgba(21,26,37,0.8)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${scrolled ? C.border : "transparent"}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <button onClick={() => setPage("home")} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: sans, fontSize: 20, fontWeight: 700, letterSpacing: "6px", color: C.white }}>ANALOGANGRIFF</button>
-      <div className="dn" style={{ display: "flex", alignItems: "center", gap: 32 }}>
-        {nl("guides", "Build Guides")}{nl("support", "Support")}{nl("shop", "Shop")}
-        <div onClick={() => setPage("shop")} style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${C.border}`, borderRadius: 4, padding: "6px 14px", cursor: "pointer" }}>
-          <span style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>Search circuits...</span>
-          <span style={{ fontFamily: mono, fontSize: 10, color: C.textDim, border: `1px solid ${C.border}`, borderRadius: 3, padding: "2px 6px" }}>{"\u2318"}K</span>
+    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, background: scrolled ? "rgba(21,26,37,0.97)" : "rgba(21,26,37,0.85)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${scrolled ? C.border : "transparent"}`, transition: "all 0.4s" }}>
+      {/* Top row: Logo + About, Contact, Sign In */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(16px,4vw,48px)", height: 48, borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
+        <button onClick={() => setPage("home")} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: sans, fontSize: 22, fontWeight: 700, letterSpacing: "6px", color: C.white }}>ANALOGANGRIFF</button>
+        <div className="dn" style={{ display: "flex", alignItems: "center", gap: 28 }}>
+          {nl("about", "About", topLinkStyle)}
+          {nl("contact", "Contact", topLinkStyle)}
+          {nl("signin", "Sign In / Register", { ...topLinkStyle, fontWeight: 700, color: C.white })}
         </div>
-        <button onClick={() => setPage("cart")} style={{ background: "none", border: "none", cursor: "pointer", position: "relative", padding: 4 }}>
-          <Icon name="cart" size={22} />
-          {cartCount > 0 && <div style={{ position: "absolute", top: -4, right: -6, width: 18, height: 18, borderRadius: "50%", background: "#ef4444", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: mono, fontSize: 10, color: "#fff", fontWeight: 700 }}>{cartCount}</div>}
-        </button>
+        {/* Mobile hamburger */}
+        <div className="mn" style={{ display: "none", alignItems: "center", gap: 12 }}>
+          <button onClick={() => setPage("cart")} style={{ background: "none", border: "none", cursor: "pointer", position: "relative" }}>
+            <Icon name="cart" size={20} />
+            {cartCount > 0 && <div style={{ position: "absolute", top: -4, right: -6, width: 16, height: 16, borderRadius: "50%", background: "#ef4444", fontFamily: mono, fontSize: 9, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>{cartCount}</div>}
+          </button>
+          <button onClick={() => setMob(!mob)} style={{ background: "none", border: "none", cursor: "pointer" }}><Icon name={mob ? "x" : "menu"} size={22} /></button>
+        </div>
       </div>
-      <div className="mn" style={{ display: "none", alignItems: "center", gap: 12 }}>
-        <button onClick={() => setPage("cart")} style={{ background: "none", border: "none", cursor: "pointer", position: "relative" }}><Icon name="cart" size={22} />{cartCount > 0 && <div style={{ position: "absolute", top: -4, right: -6, width: 16, height: 16, borderRadius: "50%", background: "#ef4444", fontFamily: mono, fontSize: 9, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>{cartCount}</div>}</button>
-        <button onClick={() => setMob(!mob)} style={{ background: "none", border: "none", cursor: "pointer" }}><Icon name={mob ? "x" : "menu"} size={24} /></button>
+
+      {/* Sub row: PCBs, Kits, Components, Forum + Search + Cart */}
+      <div className="dn" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(16px,4vw,48px)", height: 44 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+          {nl("pcbs", "PCBs", subLinkStyle)}
+          {nl("kits", "Kits", subLinkStyle)}
+          {nl("components", "Components", subLinkStyle)}
+          {nl("forum", "Forum", subLinkStyle)}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <div onClick={() => setPage("shop")} style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${C.border}`, borderRadius: 4, padding: "5px 14px", cursor: "pointer" }}>
+            <Icon name="search" size={14} />
+            <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>Search...</span>
+          </div>
+          <button onClick={() => setPage("cart")} style={{ background: "none", border: "none", cursor: "pointer", position: "relative", padding: 4, display: "flex", alignItems: "center", gap: 8 }}>
+            <Icon name="cart" size={20} />
+            <span style={{ fontFamily: mono, fontSize: 11, color: C.textMuted }}>{cartCount} items</span>
+          </button>
+        </div>
       </div>
-      {mob && <div style={{ position: "absolute", top: 64, left: 0, right: 0, background: "rgba(21,26,37,0.98)", borderBottom: `1px solid ${C.border}`, padding: "24px 32px", display: "flex", flexDirection: "column", gap: 20 }}>{nl("home", "Home")}{nl("guides", "Build Guides")}{nl("support", "Support")}{nl("shop", "Shop")}</div>}
+
+      {/* Mobile dropdown */}
+      {mob && (
+        <div style={{ position: "absolute", top: 48, left: 0, right: 0, background: "rgba(21,26,37,0.98)", borderBottom: `1px solid ${C.border}`, padding: "20px 32px", display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ fontFamily: mono, fontSize: 9, color: C.textDim, letterSpacing: "3px", marginBottom: 4 }}>SHOP</div>
+          {nl("pcbs", "PCBs", { fontSize: 13 })}
+          {nl("kits", "Kits", { fontSize: 13 })}
+          {nl("components", "Components", { fontSize: 13 })}
+          <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
+          {nl("forum", "Forum", { fontSize: 13 })}
+          {nl("about", "About", { fontSize: 13 })}
+          {nl("contact", "Contact", { fontSize: 13 })}
+          <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
+          {nl("signin", "Sign In / Register", { fontSize: 13, fontWeight: 700, color: C.white })}
+        </div>
+      )}
     </nav>
   );
 }
@@ -136,7 +177,7 @@ function Nav({ cartCount, page, setPage }) {
 /* ══ HERO ══ */
 function Hero({ setPage }) {
   return (
-    <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "120px 24px 80px", position: "relative", overflow: "hidden" }}>
+    <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "140px 24px 80px", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 30%, rgba(40,55,90,0.4) 0%, transparent 60%), linear-gradient(180deg, #0f1420 0%, ${C.bg} 50%, ${C.bgLight} 100%)` }} />
       <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: `linear-gradient(${C.accent} 1px, transparent 1px), linear-gradient(90deg, ${C.accent} 1px, transparent 1px)`, backgroundSize: "80px 80px" }} />
       <div style={{ position: "absolute", top: "15%", left: "50%", transform: "translateX(-50%)", width: "min(700px,80vw)", height: "min(420px,50vw)", background: "linear-gradient(135deg, rgba(30,40,60,0.6), rgba(20,28,45,0.4))", borderRadius: 8, border: `1px solid ${C.border}`, boxShadow: "0 40px 80px rgba(0,0,0,0.5)" }} />
@@ -145,7 +186,7 @@ function Hero({ setPage }) {
         <p style={{ fontFamily: mono, fontSize: "clamp(13px,1.4vw,16px)", color: C.textMuted, maxWidth: 600, lineHeight: 1.7, margin: "0 auto 48px" }}>Premium DIY guitar pedal kits engineered for the Indian musician. Build your sound from the circuit up.</p>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
           <button onClick={() => setPage("shop")} style={{ ...btnO, background: C.white, color: C.bg, border: "none", fontWeight: 700 }}>BROWSE CATALOG</button>
-          <button onClick={() => setPage("guides")} style={btnO}>BUILD GUIDES</button>
+          <button onClick={() => setPage("about")} style={btnO}>OUR STORY</button>
         </div>
       </div>
       <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
@@ -257,10 +298,10 @@ function Rad({ checked, onChange, label: l }) {
 }
 
 /* ══ SHOP ══ */
-function ShopPage({ addToCart }) {
+function ShopPage({ addToCart, initialType = "" }) {
   const [search, setSearch] = useState("");
   const [eCat, setECat] = useState([]);
-  const [tFilt, setTFilt] = useState([]);
+  const [tFilt, setTFilt] = useState(initialType ? [initialType] : []);
   const [diff, setDiff] = useState("Any");
   const [sort, setSort] = useState("featured");
   const [mobF, setMobF] = useState(false);
@@ -302,7 +343,7 @@ function ShopPage({ addToCart }) {
   </>;
 
   return (
-    <section style={{ paddingTop: 64 }}>
+    <section style={{ paddingTop: 92 }}>
       <div style={{ textAlign: "center", padding: "64px 24px 48px", borderBottom: `1px solid ${C.border}` }}>
         <h1 style={{ ...hdg, fontSize: "clamp(36px,6vw,56px)", marginBottom: 16 }}>CIRCUIT CATALOG</h1>
         <div style={{ fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "3px", marginBottom: 20 }}>HOME / SHOP / DIY KITS / ANALOG CIRCUITS</div>
@@ -438,6 +479,136 @@ function CheckoutPage({ cart, setPage }) {
   );
 }
 
+/* ══ ABOUT PAGE ══ */
+function AboutPage() {
+  return (
+    <section style={{ paddingTop: 120, maxWidth: 800, margin: "0 auto", padding: "120px 24px 80px" }}>
+      {/* Page header banner */}
+      <div style={{ textAlign: "center", padding: "40px 24px 48px", marginBottom: 48, borderBottom: `1px solid ${C.border}`, background: `linear-gradient(180deg, rgba(40,55,90,0.2) 0%, transparent 100%)`, margin: "-20px -24px 48px", padding: "60px 24px 48px" }}>
+        <h1 style={{ ...hdg, fontSize: "clamp(36px,6vw,52px)", marginBottom: 0 }}>About</h1>
+      </div>
+
+      <div style={{ maxWidth: 650, margin: "0 auto" }}>
+        <h2 style={{ fontFamily: sans, fontSize: 32, fontWeight: 600, color: C.white, letterSpacing: "1px", marginBottom: 32 }}>Why we exist</h2>
+
+        <div style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 2 }}>
+          <p style={{ marginBottom: 20 }}>
+            Analog Angriff started because buying guitar pedals in India is expensive, and building
+            them from scratch is confusing {"\u2014"} sourcing components from five different shops, decoding
+            cryptic schematics, hoping the PCB you etched actually works.
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            We package everything you need into a single kit: a proper through-hole PCB, every
+            component sorted and labeled, a pre-drilled enclosure, and a build guide that assumes
+            {"you've"} never soldered before.
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            Every circuit we sell is based on proven, classic designs {"\u2014"} Tube Screamers, Klon
+            variants, PT2399 delays, Big Muff fuzzes {"\u2014"} tweaked for reliability with modern,
+            easily-sourced components.
+          </p>
+          <p style={{ color: C.accent, borderLeft: `3px solid ${C.accent}`, paddingLeft: 20, marginTop: 32, marginBottom: 32, fontStyle: "italic" }}>
+            {'"Angriff" is German for "attack." It\'s the front edge of your signal. The moment pick meets string and electrons start moving. We\'re here to help you shape what happens next.'}
+          </p>
+        </div>
+
+        {/* What's in a kit */}
+        <div style={{ marginTop: 48, padding: 32, background: C.bgCard, border: `1px solid ${C.border}` }}>
+          <h3 style={{ fontFamily: mono, fontSize: 13, fontWeight: 700, color: C.white, letterSpacing: "2px", marginBottom: 20, textTransform: "uppercase" }}>{"What's in every kit"}</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {["Through-hole PCB", "All resistors & capacitors", "Semiconductors (ICs, diodes, transistors)", "Potentiometers & knobs", "Pre-drilled enclosure", "Jacks, switches & LED", "Hook-up wire", "Step-by-step build guide (PDF)"].map((item, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: mono, fontSize: 11, color: C.textMuted }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.accent, flexShrink: 0 }} />
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Quality specs */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginTop: 32 }}>
+          {[
+            { label: "PCB Finish", value: "HASL Lead-Free" },
+            { label: "Board Thickness", value: "1.6mm FR4" },
+            { label: "Components", value: "Through-Hole" },
+          ].map((spec, i) => (
+            <div key={i} style={{ padding: 20, background: C.bgCard, border: `1px solid ${C.border}`, textAlign: "center" }}>
+              <div style={{ fontFamily: mono, fontSize: 9, color: C.textDim, letterSpacing: "2px", marginBottom: 8, textTransform: "uppercase" }}>{spec.label}</div>
+              <div style={{ fontFamily: mono, fontSize: 13, color: C.white, fontWeight: 700 }}>{spec.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══ CONTACT PAGE ══ */
+function ContactPage() {
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [sent, setSent] = useState(false);
+  const set = (k, v) => setForm(p => ({ ...p, [k]: v }));
+  const inputStyle = { width: "100%", background: C.bgCard, border: `1px solid ${C.border}`, color: C.white, fontFamily: mono, fontSize: 13, padding: "12px 16px", outline: "none", boxSizing: "border-box", borderRadius: 2 };
+
+  return (
+    <section style={{ paddingTop: 120, maxWidth: 800, margin: "0 auto", padding: "120px 24px 80px" }}>
+      {/* Page header banner */}
+      <div style={{ textAlign: "center", padding: "40px 24px 48px", marginBottom: 48, borderBottom: `1px solid ${C.border}`, background: `linear-gradient(180deg, rgba(40,55,90,0.2) 0%, transparent 100%)`, margin: "-20px -24px 48px", padding: "60px 24px 48px" }}>
+        <h1 style={{ ...hdg, fontSize: "clamp(36px,6vw,52px)", marginBottom: 0 }}>Contact</h1>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, maxWidth: 700, margin: "0 auto" }}>
+        {/* Contact info */}
+        <div>
+          <h3 style={{ fontFamily: mono, fontSize: 13, fontWeight: 700, color: C.white, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 24 }}>Get in touch</h3>
+          <div style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 2.2 }}>
+            <div>{"\u{1F4E7}"} <a href="mailto:hello@analogangriff.com" style={{ color: C.accent, textDecoration: "none" }}>hello@analogangriff.com</a></div>
+            <div>{"\u{1F4AC}"} <a href="https://wa.me/91XXXXXXXXXX" style={{ color: "#25D366", textDecoration: "none" }} target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
+            <div>{"\u{1F4F7}"} <a href="#" style={{ color: C.accent, textDecoration: "none" }}>@analogangriff</a> on Instagram</div>
+          </div>
+          <div style={{ marginTop: 32, padding: 20, background: C.bgCard, border: `1px solid ${C.border}` }}>
+            <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "2px", marginBottom: 8, textTransform: "uppercase" }}>Response Time</div>
+            <div style={{ fontFamily: mono, fontSize: 13, color: C.white }}>Usually within a few hours on WhatsApp. Email replies within 24 hours.</div>
+          </div>
+          <div style={{ marginTop: 16, padding: 20, background: C.bgCard, border: `1px solid ${C.border}` }}>
+            <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "2px", marginBottom: 8, textTransform: "uppercase" }}>Location</div>
+            <div style={{ fontFamily: mono, fontSize: 13, color: C.white }}>Bengaluru, India</div>
+          </div>
+        </div>
+
+        {/* Contact form */}
+        <div>
+          <h3 style={{ fontFamily: mono, fontSize: 13, fontWeight: 700, color: C.white, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 24 }}>Send a message</h3>
+          {sent ? (
+            <div style={{ textAlign: "center", padding: "40px 0" }}>
+              <div style={{ width: 48, height: 48, borderRadius: "50%", border: `2px solid ${C.accent}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}><Icon name="check" size={24} /></div>
+              <div style={{ fontFamily: mono, fontSize: 13, color: C.textMuted }}>{"Message sent! We'll get back to you soon."}</div>
+            </div>
+          ) : (
+            <>
+              {[
+                { k: "name", l: "Name", p: "Your name", t: "text" },
+                { k: "email", l: "Email", p: "you@email.com", t: "email" },
+                { k: "subject", l: "Subject", p: "Build help, order inquiry, etc.", t: "text" },
+              ].map(f => (
+                <div key={f.k} style={{ marginBottom: 16 }}>
+                  <label style={{ display: "block", fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "1px", textTransform: "uppercase", marginBottom: 6 }}>{f.l}</label>
+                  <input type={f.t} value={form[f.k]} onChange={e => set(f.k, e.target.value)} placeholder={f.p} style={inputStyle} />
+                </div>
+              ))}
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: "block", fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "1px", textTransform: "uppercase", marginBottom: 6 }}>Message</label>
+                <textarea value={form.message} onChange={e => set("message", e.target.value)} placeholder="How can we help?" rows={5} style={{ ...inputStyle, resize: "vertical" }} />
+              </div>
+              <button onClick={() => setSent(true)} style={{ width: "100%", ...btnO, background: C.white, color: C.bg, fontWeight: 700, textAlign: "center", border: "none" }}>SEND MESSAGE</button>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ══ PLACEHOLDER ══ */
 function Placeholder({ title, desc }) {
   return <section style={{ paddingTop: 140, textAlign: "center", maxWidth: 600, margin: "0 auto", padding: "140px 24px 80px" }}><h1 style={{ ...hdg, fontSize: 36, marginBottom: 16 }}>{title}</h1><p style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 1.8 }}>{desc}</p></section>;
@@ -448,7 +619,7 @@ function Footer() {
   return (
     <footer style={{ borderTop: `1px solid ${C.border}`, marginTop: 40 }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px clamp(16px,4vw,48px) 32px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 48 }}>
-        {[{ t: "SHOP & SUPPORT", l: ["Build Guides", "Support", "Shop"] }, { t: "COMMUNITY", l: ["Instagram", "YouTube"] }, { t: "LEGAL", l: ["Privacy Policy", "Terms of Service"] }].map((c, i) => <div key={i}><h4 style={{ ...lbl, marginBottom: 24 }}>{c.t}</h4>{c.l.map(x => <div key={x} style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, marginBottom: 14, cursor: "pointer" }}>{x}</div>)}</div>)}
+        {[{ t: "SHOP", l: ["PCBs", "Kits", "Components"] }, { t: "COMMUNITY", l: ["Forum", "Instagram", "YouTube"] }, { t: "COMPANY", l: ["About", "Contact", "Privacy Policy"] }].map((c, i) => <div key={i}><h4 style={{ ...lbl, marginBottom: 24 }}>{c.t}</h4>{c.l.map(x => <div key={x} style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, marginBottom: 14, cursor: "pointer" }}>{x}</div>)}</div>)}
       </div>
       <div style={{ padding: "24px clamp(16px,4vw,48px)", borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, maxWidth: 1200, margin: "0 auto" }}>
         <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "3px" }}>DESIGNED IN INDIA</span>
@@ -487,11 +658,13 @@ export default function Home() {
       <Nav cartCount={cc} page={page} setPage={setPage} />
       <Toast message={toast.msg} visible={toast.visible} />
       {page === "home" && <><Hero setPage={setPage} /><HomeFeatured addToCart={addToCart} /><SignalPath /></>}
-      {page === "shop" && <ShopPage addToCart={addToCart} />}
+      {(page === "shop" || page === "pcbs" || page === "kits" || page === "components") && <ShopPage addToCart={addToCart} initialType={page === "pcbs" ? "PCB" : page === "kits" ? "Full Kit" : page === "components" ? "Components" : ""} />}
       {page === "cart" && <CartPage cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} setPage={setPage} />}
       {page === "checkout" && <CheckoutPage cart={cart} setPage={setPage} />}
-      {page === "guides" && <Placeholder title="BUILD GUIDES" desc="Step-by-step documentation for every circuit. Coming soon." />}
-      {page === "support" && <Placeholder title="SUPPORT" desc="Troubleshooting, component ID, and WhatsApp support." />}
+      {page === "about" && <AboutPage />}
+      {page === "contact" && <ContactPage />}
+      {page === "forum" && <Placeholder title="FORUM" desc="Community discussion board for builders across India. Share your builds, ask questions, help others. Coming soon." />}
+      {page === "signin" && <Placeholder title="SIGN IN / REGISTER" desc="Account system coming soon. For now, place orders via UPI + WhatsApp." />}
       <Footer />
     </div>
   );
