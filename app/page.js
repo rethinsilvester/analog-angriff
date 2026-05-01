@@ -302,7 +302,7 @@ function Nav({ cartCount, page, setPage, onSearch }) {
 function Hero({ setPage }) {
   return (
     <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "140px 24px 80px", position: "relative", overflow: "hidden" }}>
-      {/* Full-bleed background image — place your photo at /public/hero-bg.jpg */}
+      {/*Full-bleed background image — place your photo at /public/hero-bg.jpg */}
       <div style={{ position: "absolute", inset: 0 }}>
         <img src="/hero-bg.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} onError={e => { e.target.style.display = "none"; }} />
       </div>
