@@ -309,13 +309,17 @@ function Rad({ checked, onChange, label: l }) {
 }
 
 /* ══ SHOP ══ */
-function ShopPage({ addToCart, initialType = "", initialSearch = "" }) {
+function ShopPage({ addToCart, initialType = "", initialSearch = "", searchId = 0 }) {
   const [search, setSearch] = useState(initialSearch);
   const [eCat, setECat] = useState([]);
   const [tFilt, setTFilt] = useState(initialType ? [initialType] : []);
   const [diff, setDiff] = useState("Any");
   const [sort, setSort] = useState("featured");
   const [mobF, setMobF] = useState(false);
+
+  // Sync search when nav search changes (fixes re-search from any page)
+  useEffect(() => { setSearch(initialSearch); }, [initialSearch, searchId]);
+  useEffect(() => { setTFilt(initialType ? [initialType] : []); }, [initialType]);
 
   const togE = c => setECat(p => p.includes(c) ? p.filter(x => x !== c) : [...p, c]);
   const togT = c => setTFilt(p => p.includes(c) ? p.filter(x => x !== c) : [...p, c]);
@@ -460,6 +464,39 @@ function CheckoutPage({ cart, setPage }) {
   const [done, setDone] = useState(false);
   const tot = cart.reduce((s, i) => s + i.product.price * i.qty, 0);
   const iS = { width: "100%", background: C.bgCard, border: `1px solid ${C.border}`, color: C.white, fontFamily: mono, fontSize: 13, padding: "12px 16px", outline: "none", boxSizing: "border-box", borderRadius: 2 };
+
+  // Auto-fill from saved profile
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("aa_user");
+      if (stored) {
+        const user = JSON.parse(atob(stored));
+        sF(prev => ({
+          name: user.name || prev.name,
+          phone: user.phone || prev.phone,
+          address: user.address || prev.address,
+          utr: prev.utr,
+        }));
+      }
+    } catch (e) { /* no saved user */ }
+  }, []);
+
+  const handleConfirm = () => {
+    // Save order to history
+    try {
+      const order = {
+        id: Date.now().toString(36).toUpperCase(),
+        date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+        items: cart.map(({ product: p, qty }) => ({ name: p.name, type: p.type, price: p.price, qty })),
+        total: tot,
+        status: "Pending Verification",
+      };
+      const existing = (() => { try { const s = localStorage.getItem("aa_orders"); return s ? JSON.parse(atob(s)) : []; } catch { return []; } })();
+      existing.unshift(order);
+      localStorage.setItem("aa_orders", btoa(JSON.stringify(existing.slice(0, 50))));
+    } catch (e) { /* order save failed, non-critical */ }
+    setDone(true);
+  };
   if (done) return <section style={{ paddingTop: 160, textAlign: "center", maxWidth: 500, margin: "0 auto", padding: "160px 24px 80px" }}><div style={{ width: 56, height: 56, borderRadius: "50%", border: `2px solid ${C.accent}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}><Icon name="check" size={28} /></div><h2 style={{ ...hdg, fontSize: 28, marginBottom: 12 }}>Order Received</h2><p style={{ fontFamily: mono, fontSize: 12, color: C.textMuted, lineHeight: 1.8, marginBottom: 32 }}>{"We'll verify payment and confirm via WhatsApp."}</p><button onClick={() => setPage("home")} style={{ ...btnO, background: C.white, color: C.bg }}>BACK TO HOME</button></section>;
   return (
     <section style={{ paddingTop: 100, maxWidth: 600, margin: "0 auto", padding: "100px 24px 80px" }}>
@@ -484,7 +521,7 @@ function CheckoutPage({ cart, setPage }) {
         <div style={{ marginBottom: 20 }}><label style={{ display: "block", ...lbl, fontSize: 10, marginBottom: 8 }}>Shipping Address</label><textarea value={f.address} onChange={e => sF(x => ({ ...x, address: e.target.value }))} placeholder="House, street, city, state, PIN" rows={3} style={{ ...iS, resize: "vertical" }} /></div>
         <div><label style={{ display: "block", ...lbl, fontSize: 10, marginBottom: 8 }}>UTR / Transaction ID</label><input type="text" value={f.utr} onChange={e => sF(x => ({ ...x, utr: e.target.value }))} placeholder="From your UPI app" style={iS} /></div>
       </div>
-      <button onClick={() => setDone(true)} style={{ width: "100%", ...btnO, background: C.white, color: C.bg, fontWeight: 700, textAlign: "center", border: "none", marginBottom: 12 }}>CONFIRM ORDER</button>
+      <button onClick={handleConfirm} style={{ width: "100%", ...btnO, background: C.white, color: C.bg, fontWeight: 700, textAlign: "center", border: "none", marginBottom: 12 }}>CONFIRM ORDER</button>
       <a href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer" style={{ display: "block", textAlign: "center", fontFamily: mono, fontSize: 11, color: "#25D366", padding: 14, border: "1px solid rgba(37,211,102,0.3)", textDecoration: "none", letterSpacing: "1px" }}>{"\u{1F4AC}"} MESSAGE ON WHATSAPP</a>
     </section>
   );
@@ -625,6 +662,208 @@ function Placeholder({ title, desc }) {
   return <section style={{ paddingTop: 140, textAlign: "center", maxWidth: 600, margin: "0 auto", padding: "140px 24px 80px" }}><h1 style={{ ...hdg, fontSize: 36, marginBottom: 16 }}>{title}</h1><p style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 1.8 }}>{desc}</p></section>;
 }
 
+/* ══ ACCOUNT PAGE ══ */
+function AccountPage({ setPage }) {
+  const [mode, setMode] = useState("login"); // login | register | profile
+  const [user, setUser] = useState(null);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", pin: "" });
+  const [loginForm, setLoginForm] = useState({ email: "", pin: "" });
+  const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  // Load user on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("aa_user");
+      if (stored) {
+        const parsed = JSON.parse(atob(stored));
+        setUser(parsed);
+        setForm(parsed);
+        setMode("profile");
+      }
+    } catch (e) { /* no stored user */ }
+  }, []);
+
+  // Load order history
+  const [orders, setOrders] = useState([]);
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("aa_orders");
+      if (stored) setOrders(JSON.parse(atob(stored)));
+    } catch (e) { /* no orders */ }
+  }, []);
+
+  const saveUser = (data) => {
+    localStorage.setItem("aa_user", btoa(JSON.stringify(data)));
+    setUser(data);
+    setForm(data);
+    setMode("profile");
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleRegister = () => {
+    setError("");
+    if (!form.name.trim() || !form.email.trim() || !form.pin.trim()) {
+      setError("Name, email, and PIN are required."); return;
+    }
+    if (form.pin.length < 4) { setError("PIN must be at least 4 characters."); return; }
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(form.email)) { setError("Enter a valid email address."); return; }
+    saveUser({ ...form });
+  };
+
+  const handleLogin = () => {
+    setError("");
+    try {
+      const stored = localStorage.getItem("aa_user");
+      if (!stored) { setError("No account found. Please register first."); return; }
+      const parsed = JSON.parse(atob(stored));
+      if (parsed.email.toLowerCase() !== loginForm.email.toLowerCase() || parsed.pin !== loginForm.pin) {
+        setError("Email or PIN does not match."); return;
+      }
+      setUser(parsed);
+      setForm(parsed);
+      setMode("profile");
+    } catch (e) { setError("No account found. Please register first."); }
+  };
+
+  const handleUpdate = () => {
+    setError("");
+    if (!form.name.trim() || !form.email.trim()) { setError("Name and email are required."); return; }
+    saveUser({ ...form });
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setForm({ name: "", email: "", phone: "", address: "", pin: "" });
+    setMode("login");
+  };
+
+  const handleDeleteAccount = () => {
+    localStorage.removeItem("aa_user");
+    localStorage.removeItem("aa_orders");
+    setUser(null);
+    setOrders([]);
+    setForm({ name: "", email: "", phone: "", address: "", pin: "" });
+    setMode("login");
+  };
+
+  const iS = { width: "100%", background: C.bgCard, border: `1px solid ${C.border}`, color: C.white, fontFamily: mono, fontSize: 13, padding: "12px 16px", outline: "none", boxSizing: "border-box", borderRadius: 2 };
+  const labelS = { display: "block", fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "1px", textTransform: "uppercase", marginBottom: 6 };
+
+  // ── PROFILE VIEW ──
+  if (mode === "profile" && user) {
+    return (
+      <section style={{ paddingTop: 120, maxWidth: 700, margin: "0 auto", padding: "120px 24px 80px" }}>
+        <div style={{ textAlign: "center", marginBottom: 48, padding: "40px 24px", background: `linear-gradient(180deg, rgba(40,55,90,0.2) 0%, transparent 100%)` }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", border: `2px solid ${C.accent}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontFamily: sans, fontSize: 28, fontWeight: 700, color: C.white }}>{user.name.charAt(0).toUpperCase()}</div>
+          <h1 style={{ ...hdg, fontSize: 28, marginBottom: 4 }}>Welcome, {user.name.split(" ")[0]}</h1>
+          <p style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>{user.email}</p>
+        </div>
+
+        {saved && <div style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)", padding: "12px 20px", marginBottom: 24, fontFamily: mono, fontSize: 12, color: "#4ade80", textAlign: "center", letterSpacing: "1px" }}>PROFILE SAVED SUCCESSFULLY</div>}
+
+        {/* Edit profile */}
+        <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: 28, marginBottom: 24 }}>
+          <h3 style={{ fontFamily: mono, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 24 }}>Profile Details</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div><label style={labelS}>Full Name</label><input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={iS} /></div>
+            <div><label style={labelS}>Email</label><input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={iS} /></div>
+            <div><label style={labelS}>WhatsApp Number</label><input type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="+91 98765 43210" style={iS} /></div>
+            <div><label style={labelS}>PIN (for login)</label><input type="password" value={form.pin} onChange={e => setForm(p => ({ ...p, pin: e.target.value }))} style={iS} /></div>
+          </div>
+          <div style={{ marginTop: 16 }}><label style={labelS}>Shipping Address</label><textarea value={form.address} onChange={e => setForm(p => ({ ...p, address: e.target.value }))} placeholder="House/flat, street, city, state, PIN code" rows={3} style={{ ...iS, resize: "vertical" }} /></div>
+          {error && <div style={{ fontFamily: mono, fontSize: 11, color: "#ef4444", marginTop: 12 }}>{error}</div>}
+          <button onClick={handleUpdate} style={{ ...btnO, background: C.white, color: C.bg, fontWeight: 700, border: "none", marginTop: 20, width: "100%", textAlign: "center" }}>SAVE CHANGES</button>
+        </div>
+
+        {/* Order history */}
+        <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: 28, marginBottom: 24 }}>
+          <h3 style={{ fontFamily: mono, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 20 }}>Order History</h3>
+          {orders.length === 0 ? (
+            <div style={{ fontFamily: mono, fontSize: 12, color: C.textDim, textAlign: "center", padding: "24px 0" }}>
+              No orders yet. <button onClick={() => setPage("shop")} style={{ background: "none", border: "none", color: "#4a9eff", fontFamily: mono, fontSize: 12, cursor: "pointer" }}>Browse the catalog</button>
+            </div>
+          ) : (
+            orders.map((order, i) => (
+              <div key={i} style={{ padding: "16px 0", borderBottom: i < orders.length - 1 ? `1px solid ${C.border}` : "none" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                  <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>Order #{order.id}</span>
+                  <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>{order.date}</span>
+                </div>
+                {order.items.map((item, j) => (
+                  <div key={j} style={{ fontFamily: mono, fontSize: 12, color: C.textMuted, marginBottom: 4 }}>
+                    {item.name} ({item.type}) {"\u00D7"} {item.qty} {"\u2014"} {"\u20B9"}{(item.price * item.qty).toLocaleString("en-IN")}
+                  </div>
+                ))}
+                <div style={{ fontFamily: mono, fontSize: 13, color: C.white, fontWeight: 700, marginTop: 8 }}>Total: {"\u20B9"}{order.total.toLocaleString("en-IN")}</div>
+                <span style={{ fontFamily: mono, fontSize: 10, letterSpacing: "2px", padding: "3px 8px", background: order.status === "Confirmed" ? "rgba(74,222,128,0.1)" : "rgba(250,204,21,0.1)", color: order.status === "Confirmed" ? "#4ade80" : "#facc15", borderRadius: 2, marginTop: 8, display: "inline-block" }}>{order.status.toUpperCase()}</span>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Actions */}
+        <div style={{ display: "flex", gap: 16 }}>
+          <button onClick={handleLogout} style={{ ...btnO, flex: 1, textAlign: "center", fontSize: 11 }}>SIGN OUT</button>
+          <button onClick={handleDeleteAccount} style={{ ...btnO, flex: 1, textAlign: "center", fontSize: 11, color: "#ef4444", borderColor: "rgba(239,68,68,0.3)" }}>DELETE ACCOUNT</button>
+        </div>
+      </section>
+    );
+  }
+
+  // ── LOGIN / REGISTER VIEW ──
+  return (
+    <section style={{ paddingTop: 120, maxWidth: 440, margin: "0 auto", padding: "120px 24px 80px" }}>
+      <div style={{ textAlign: "center", marginBottom: 40 }}>
+        <div style={{ width: 56, height: 56, borderRadius: "50%", border: `2px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+          <Icon name="sliders" size={24} />
+        </div>
+        <h1 style={{ ...hdg, fontSize: 28, marginBottom: 8 }}>{mode === "login" ? "SIGN IN" : "CREATE ACCOUNT"}</h1>
+        <p style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>
+          {mode === "login" ? "Sign in to track orders and auto-fill checkout." : "Create an account to save your details and track orders."}
+        </p>
+      </div>
+
+      {/* Tab toggle */}
+      <div style={{ display: "flex", marginBottom: 32, border: `1px solid ${C.border}` }}>
+        {["login", "register"].map(m => (
+          <button key={m} onClick={() => { setMode(m); setError(""); }} style={{
+            flex: 1, padding: "12px 0", fontFamily: mono, fontSize: 11, letterSpacing: "2px",
+            textTransform: "uppercase", background: mode === m ? C.white : "transparent",
+            color: mode === m ? C.bg : C.textDim, border: "none", cursor: "pointer",
+            fontWeight: mode === m ? 700 : 400, transition: "all 0.3s",
+          }}>{m === "login" ? "Sign In" : "Register"}</button>
+        ))}
+      </div>
+
+      {error && <div style={{ fontFamily: mono, fontSize: 11, color: "#ef4444", marginBottom: 16, padding: "10px 16px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>{error}</div>}
+
+      {mode === "login" ? (
+        <>
+          <div style={{ marginBottom: 16 }}><label style={labelS}>Email</label><input type="email" value={loginForm.email} onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))} placeholder="you@email.com" style={iS} /></div>
+          <div style={{ marginBottom: 24 }}><label style={labelS}>PIN</label><input type="password" value={loginForm.pin} onChange={e => setLoginForm(p => ({ ...p, pin: e.target.value }))} placeholder="Your 4+ character PIN" style={iS} onKeyDown={e => { if (e.key === "Enter") handleLogin(); }} /></div>
+          <button onClick={handleLogin} style={{ width: "100%", ...btnO, background: C.white, color: C.bg, fontWeight: 700, textAlign: "center", border: "none" }}>SIGN IN</button>
+        </>
+      ) : (
+        <>
+          <div style={{ marginBottom: 16 }}><label style={labelS}>Full Name *</label><input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Rahul Sharma" style={iS} /></div>
+          <div style={{ marginBottom: 16 }}><label style={labelS}>Email *</label><input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="you@email.com" style={iS} /></div>
+          <div style={{ marginBottom: 16 }}><label style={labelS}>WhatsApp Number</label><input type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="+91 98765 43210" style={iS} /></div>
+          <div style={{ marginBottom: 16 }}><label style={labelS}>Shipping Address</label><textarea value={form.address} onChange={e => setForm(p => ({ ...p, address: e.target.value }))} placeholder="House/flat, street, city, state, PIN code" rows={2} style={{ ...iS, resize: "vertical" }} /></div>
+          <div style={{ marginBottom: 24 }}><label style={labelS}>Create PIN * (4+ characters)</label><input type="password" value={form.pin} onChange={e => setForm(p => ({ ...p, pin: e.target.value }))} placeholder="Used to sign in later" style={iS} onKeyDown={e => { if (e.key === "Enter") handleRegister(); }} /></div>
+          <button onClick={handleRegister} style={{ width: "100%", ...btnO, background: C.white, color: C.bg, fontWeight: 700, textAlign: "center", border: "none" }}>CREATE ACCOUNT</button>
+        </>
+      )}
+
+      <div style={{ textAlign: "center", marginTop: 24, fontFamily: mono, fontSize: 11, color: C.textDim, lineHeight: 1.8 }}>
+        Your data is stored locally on this device only.
+        <br />No passwords are sent to any server.
+      </div>
+    </section>
+  );
+}
 /* ══ FOOTER ══ */
 function Footer() {
   return (
@@ -650,7 +889,8 @@ export default function Home() {
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState({ msg: "", visible: false });
   const [navSearch, setNavSearch] = useState("");
-  const handleSearch = (term) => { setNavSearch(term); setPage("shop"); };
+  const [searchId, setSearchId] = useState(0);
+  const handleSearch = (term) => { setNavSearch(term); setSearchId(c => c + 1); setPage("shop"); };
   const handleSetPage = (p) => { if (p !== "shop" && p !== "pcbs" && p !== "kits" && p !== "components") setNavSearch(""); setPage(p); };
   const showToast = m => { setToast({ msg: m, visible: true }); setTimeout(() => setToast({ msg: "", visible: false }), 2200); };
   const addToCart = p => { setCart(prev => { const e = prev.find(i => i.product.id === p.id); if (e) return prev.map(i => i.product.id === p.id ? { ...i, qty: i.qty + 1 } : i); return [...prev, { product: p, qty: 1 }]; }); showToast(`${p.name} added`); };
@@ -672,13 +912,13 @@ export default function Home() {
       <Nav cartCount={cc} page={page} setPage={handleSetPage} onSearch={handleSearch} />
       <Toast message={toast.msg} visible={toast.visible} />
       {page === "home" && <><Hero setPage={handleSetPage} /><HomeFeatured addToCart={addToCart} /><SignalPath /></>}
-      {(page === "shop" || page === "pcbs" || page === "kits" || page === "components") && <ShopPage addToCart={addToCart} initialType={page === "pcbs" ? "PCB" : page === "kits" ? "Full Kit" : page === "components" ? "Components" : ""} initialSearch={navSearch} />}
+      {(page === "shop" || page === "pcbs" || page === "kits" || page === "components") && <ShopPage addToCart={addToCart} initialType={page === "pcbs" ? "PCB" : page === "kits" ? "Full Kit" : page === "components" ? "Components" : ""} initialSearch={navSearch} searchId={searchId} />}
       {page === "cart" && <CartPage cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} setPage={handleSetPage} />}
       {page === "checkout" && <CheckoutPage cart={cart} setPage={handleSetPage} />}
       {page === "about" && <AboutPage />}
       {page === "contact" && <ContactPage />}
       {page === "forum" && <Placeholder title="FORUM" desc="Community discussion board for builders across India. Share your builds, ask questions, help others. Coming soon." />}
-      {page === "signin" && <Placeholder title="SIGN IN / REGISTER" desc="Account system coming soon. For now, place orders via UPI + WhatsApp." />}
+      {page === "signin" && <AccountPage setPage={handleSetPage} />}
       <Footer />
     </div>
   );
