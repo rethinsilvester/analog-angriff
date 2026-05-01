@@ -110,27 +110,117 @@ function Nav({ cartCount, page, setPage, onSearch }) {
   const [mob, setMob] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchVal, setSearchVal] = useState("");
+  const [userDropdown, setUserDropdown] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
   const searchRef = useRef(null);
+  const dropdownRef = useRef(null);
+
   useEffect(() => { const h = () => setScrolled(window.scrollY > 50); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
   useEffect(() => { if (searchOpen && searchRef.current) searchRef.current.focus(); }, [searchOpen]);
 
-  const nl = (k, l, style = {}) => <button key={k} onClick={() => { setPage(k); setMob(false); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: mono, letterSpacing: "2px", textTransform: "uppercase", color: page === k ? C.white : C.textMuted, padding: "4px 0", transition: "color 0.3s", ...style }}>{l}</button>;
+  // Check login state on every render (cheap localStorage read)
+  useEffect(() => {
+    const check = () => {
+      try { const s = localStorage.getItem("aa_user"); setLoggedInUser(s ? JSON.parse(atob(s)) : null); } catch { setLoggedInUser(null); }
+    };
+    check();
+    window.addEventListener("focus", check);
+    const interval = setInterval(check, 2000);
+    return () => { window.removeEventListener("focus", check); clearInterval(interval); };
+  }, [page]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const h = (e) => { if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setUserDropdown(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
+
+  const nl = (k, l, style = {}) => <button key={k} onClick={() => { setPage(k); setMob(false); setUserDropdown(false); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: mono, letterSpacing: "2px", textTransform: "uppercase", color: page === k ? C.white : C.textMuted, padding: "4px 0", transition: "color 0.3s", ...style }}>{l}</button>;
 
   const topLinkStyle = { fontSize: 11, letterSpacing: "1.5px" };
-  const subLinkStyle = { fontSize: 12, letterSpacing: "2.5px", fontWeight: page ? 400 : 400 };
+  const subLinkStyle = { fontSize: 12, letterSpacing: "2.5px" };
+
+  const handleLogout = () => {
+    localStorage.removeItem("aa_user");
+    setLoggedInUser(null);
+    setUserDropdown(false);
+    setPage("home");
+  };
+
+  // User avatar button (logged in)
+  const UserAvatar = ({ mobile = false }) => (
+    <div ref={mobile ? null : dropdownRef} style={{ position: "relative" }}>
+      <button onClick={() => mobile ? setPage("signin") : setUserDropdown(!userDropdown)} style={{
+        background: "none", border: `1.5px solid ${C.borderLight}`, cursor: "pointer",
+        width: mobile ? 28 : 32, height: mobile ? 28 : 32, borderRadius: "50%",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontFamily: sans, fontSize: mobile ? 12 : 14, fontWeight: 700, color: C.white,
+        transition: "border-color 0.3s",
+      }}
+        onMouseOver={e => e.currentTarget.style.borderColor = C.accent}
+        onMouseOut={e => e.currentTarget.style.borderColor = C.borderLight}
+      >
+        {loggedInUser.name.charAt(0).toUpperCase()}
+      </button>
+
+      {/* Desktop dropdown */}
+      {!mobile && userDropdown && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 8px)", right: 0,
+          background: C.bgCard, border: `1px solid ${C.border}`,
+          minWidth: 200, boxShadow: "0 12px 32px rgba(0,0,0,0.4)",
+          zIndex: 1001,
+        }}>
+          {/* User info header */}
+          <div style={{ padding: "16px 18px", borderBottom: `1px solid ${C.border}` }}>
+            <div style={{ fontFamily: mono, fontSize: 12, color: C.white, fontWeight: 700 }}>{loggedInUser.name}</div>
+            <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, marginTop: 2 }}>{loggedInUser.email}</div>
+          </div>
+          {/* Menu items */}
+          {[
+            { label: "Order History", action: () => { setPage("signin"); setUserDropdown(false); } },
+            { label: "Edit Profile", action: () => { setPage("profile"); setUserDropdown(false); } },
+          ].map((item, i) => (
+            <button key={i} onClick={item.action} style={{
+              display: "block", width: "100%", textAlign: "left",
+              padding: "12px 18px", background: "none", border: "none",
+              fontFamily: mono, fontSize: 11, color: C.textMuted, letterSpacing: "1px",
+              cursor: "pointer", transition: "all 0.2s",
+            }}
+              onMouseOver={e => { e.target.style.background = "rgba(255,255,255,0.04)"; e.target.style.color = C.white; }}
+              onMouseOut={e => { e.target.style.background = "none"; e.target.style.color = C.textMuted; }}
+            >{item.label}</button>
+          ))}
+          <div style={{ borderTop: `1px solid ${C.border}` }}>
+            <button onClick={handleLogout} style={{
+              display: "block", width: "100%", textAlign: "left",
+              padding: "12px 18px", background: "none", border: "none",
+              fontFamily: mono, fontSize: 11, color: "#ef4444", letterSpacing: "1px",
+              cursor: "pointer", transition: "all 0.2s",
+            }}
+              onMouseOver={e => e.target.style.background = "rgba(239,68,68,0.06)"}
+              onMouseOut={e => e.target.style.background = "none"}
+            >Sign Out</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, background: scrolled ? "rgba(21,26,37,0.97)" : "rgba(21,26,37,0.85)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${scrolled ? C.border : "transparent"}`, transition: "all 0.4s" }}>
-      {/* Top row: Logo + About, Contact, Sign In */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(16px,4vw,48px)", height: 48, borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
+      {/* Top row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(16px,4vw,48px)", height: 48, borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
         <button onClick={() => setPage("home")} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: sans, fontSize: 22, fontWeight: 700, letterSpacing: "6px", color: C.white }}>ANALOGANGRIFF</button>
         <div className="dn" style={{ display: "flex", alignItems: "center", gap: 28 }}>
           {nl("about", "About", topLinkStyle)}
           {nl("contact", "Contact", topLinkStyle)}
-          {nl("signin", "Sign In / Register", { ...topLinkStyle, fontWeight: 700, color: C.white })}
+          {loggedInUser ? <UserAvatar /> : nl("signin", "Sign In / Register", { ...topLinkStyle, fontWeight: 700, color: C.white })}
         </div>
         {/* Mobile hamburger */}
         <div className="mn" style={{ display: "none", alignItems: "center", gap: 12 }}>
+          {loggedInUser && <UserAvatar mobile />}
           <button onClick={() => setPage("cart")} style={{ background: "none", border: "none", cursor: "pointer", position: "relative" }}>
             <Icon name="cart" size={20} />
             {cartCount > 0 && <div style={{ position: "absolute", top: -4, right: -6, width: 16, height: 16, borderRadius: "50%", background: "#ef4444", fontFamily: mono, fontSize: 9, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>{cartCount}</div>}
@@ -139,7 +229,7 @@ function Nav({ cartCount, page, setPage, onSearch }) {
         </div>
       </div>
 
-      {/* Sub row: PCBs, Kits, Components, Forum + Search + Cart */}
+      {/* Sub row */}
       <div className="dn" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(16px,4vw,48px)", height: 44 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
           {nl("pcbs", "PCBs", subLinkStyle)}
@@ -178,7 +268,15 @@ function Nav({ cartCount, page, setPage, onSearch }) {
           {nl("about", "About", { fontSize: 13 })}
           {nl("contact", "Contact", { fontSize: 13 })}
           <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
-          {nl("signin", "Sign In / Register", { fontSize: 13, fontWeight: 700, color: C.white })}
+          {loggedInUser ? (
+            <>
+              {nl("signin", "My Orders", { fontSize: 13 })}
+              {nl("profile", "Edit Profile", { fontSize: 13 })}
+              <button onClick={() => { handleLogout(); setMob(false); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: mono, fontSize: 13, letterSpacing: "2px", textTransform: "uppercase", color: "#ef4444", padding: "4px 0", textAlign: "left" }}>Sign Out</button>
+            </>
+          ) : (
+            nl("signin", "Sign In / Register", { fontSize: 13, fontWeight: 700, color: C.white })
+          )}
         </div>
       )}
     </nav>
@@ -662,54 +760,33 @@ function Placeholder({ title, desc }) {
   return <section style={{ paddingTop: 140, textAlign: "center", maxWidth: 600, margin: "0 auto", padding: "140px 24px 80px" }}><h1 style={{ ...hdg, fontSize: 36, marginBottom: 16 }}>{title}</h1><p style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 1.8 }}>{desc}</p></section>;
 }
 
-/* ══ ACCOUNT PAGE ══ */
-function AccountPage({ setPage }) {
-  const [mode, setMode] = useState("login"); // login | register | profile
+/* ══ ACCOUNT PAGE — Orders view (default when clicking avatar) ══ */
+function AccountPage({ setPage, view = "orders" }) {
+  const [mode, setMode] = useState("login");
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", pin: "" });
   const [loginForm, setLoginForm] = useState({ email: "", pin: "" });
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
 
-  // Load user on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem("aa_user");
-      if (stored) {
-        const parsed = JSON.parse(atob(stored));
-        setUser(parsed);
-        setForm(parsed);
-        setMode("profile");
-      }
-    } catch (e) { /* no stored user */ }
-  }, []);
+      if (stored) { const parsed = JSON.parse(atob(stored)); setUser(parsed); setForm(parsed); setMode(view === "profile" ? "profile" : "orders"); }
+    } catch (e) {}
+  }, [view]);
 
-  // Load order history
   const [orders, setOrders] = useState([]);
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("aa_orders");
-      if (stored) setOrders(JSON.parse(atob(stored)));
-    } catch (e) { /* no orders */ }
-  }, []);
+  useEffect(() => { try { const s = localStorage.getItem("aa_orders"); if (s) setOrders(JSON.parse(atob(s))); } catch (e) {} }, []);
 
-  const saveUser = (data) => {
-    localStorage.setItem("aa_user", btoa(JSON.stringify(data)));
-    setUser(data);
-    setForm(data);
-    setMode("profile");
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
+  const saveUser = (data) => { localStorage.setItem("aa_user", btoa(JSON.stringify(data))); setUser(data); setForm(data); setMode("orders"); setSaved(true); setTimeout(() => setSaved(false), 2000); };
 
   const handleRegister = () => {
     setError("");
-    if (!form.name.trim() || !form.email.trim() || !form.pin.trim()) {
-      setError("Name, email, and PIN are required."); return;
-    }
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.pin.trim()) { setError("Name, email, phone, and PIN are all required."); return; }
     if (form.pin.length < 4) { setError("PIN must be at least 4 characters."); return; }
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRe.test(form.email)) { setError("Enter a valid email address."); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setError("Enter a valid email address."); return; }
+    if (!/^[\+]?[0-9\s\-]{10,15}$/.test(form.phone.replace(/\s/g, ""))) { setError("Enter a valid phone number."); return; }
     saveUser({ ...form });
   };
 
@@ -719,95 +796,88 @@ function AccountPage({ setPage }) {
       const stored = localStorage.getItem("aa_user");
       if (!stored) { setError("No account found. Please register first."); return; }
       const parsed = JSON.parse(atob(stored));
-      if (parsed.email.toLowerCase() !== loginForm.email.toLowerCase() || parsed.pin !== loginForm.pin) {
-        setError("Email or PIN does not match."); return;
-      }
-      setUser(parsed);
-      setForm(parsed);
-      setMode("profile");
+      if (parsed.email.toLowerCase() !== loginForm.email.toLowerCase() || parsed.pin !== loginForm.pin) { setError("Email or PIN does not match."); return; }
+      setUser(parsed); setForm(parsed); setMode("orders");
     } catch (e) { setError("No account found. Please register first."); }
   };
 
   const handleUpdate = () => {
     setError("");
-    if (!form.name.trim() || !form.email.trim()) { setError("Name and email are required."); return; }
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) { setError("Name, email, and phone are required."); return; }
     saveUser({ ...form });
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setForm({ name: "", email: "", phone: "", address: "", pin: "" });
-    setMode("login");
-  };
-
-  const handleDeleteAccount = () => {
-    localStorage.removeItem("aa_user");
-    localStorage.removeItem("aa_orders");
-    setUser(null);
-    setOrders([]);
-    setForm({ name: "", email: "", phone: "", address: "", pin: "" });
-    setMode("login");
-  };
+  const handleDeleteAccount = () => { localStorage.removeItem("aa_user"); localStorage.removeItem("aa_orders"); setUser(null); setOrders([]); setForm({ name: "", email: "", phone: "", address: "", pin: "" }); setMode("login"); };
 
   const iS = { width: "100%", background: C.bgCard, border: `1px solid ${C.border}`, color: C.white, fontFamily: mono, fontSize: 13, padding: "12px 16px", outline: "none", boxSizing: "border-box", borderRadius: 2 };
   const labelS = { display: "block", fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "1px", textTransform: "uppercase", marginBottom: 6 };
 
-  // ── PROFILE VIEW ──
+  // ── ORDERS VIEW ──
+  if (mode === "orders" && user) {
+    return (
+      <section style={{ paddingTop: 120, maxWidth: 750, margin: "0 auto", padding: "120px 24px 80px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 40, flexWrap: "wrap", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", border: `2px solid ${C.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: sans, fontSize: 22, fontWeight: 700, color: C.white }}>{user.name.charAt(0).toUpperCase()}</div>
+            <div>
+              <div style={{ fontFamily: sans, fontSize: 20, fontWeight: 600, color: C.white, letterSpacing: "1px" }}>{user.name}</div>
+              <div style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>{user.email}</div>
+            </div>
+          </div>
+          <button onClick={() => setMode("profile")} style={{ ...btnO, fontSize: 10, padding: "10px 20px" }}>EDIT PROFILE</button>
+        </div>
+        {saved && <div style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)", padding: "12px 20px", marginBottom: 24, fontFamily: mono, fontSize: 12, color: "#4ade80", textAlign: "center", letterSpacing: "1px" }}>PROFILE SAVED</div>}
+        <h2 style={{ ...hdg, fontSize: 22, marginBottom: 24 }}>ORDER HISTORY</h2>
+        {orders.length === 0 ? (
+          <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: "48px 24px", textAlign: "center" }}>
+            <Icon name="package" size={40} />
+            <div style={{ fontFamily: mono, fontSize: 14, color: C.textMuted, marginTop: 16, marginBottom: 20 }}>No orders yet</div>
+            <button onClick={() => setPage("shop")} style={{ ...btnO, background: C.white, color: C.bg, fontWeight: 700, border: "none", fontSize: 11 }}>BROWSE CATALOG</button>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {orders.map((order, i) => (
+              <div key={i} style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: 24 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+                  <div><span style={{ fontFamily: mono, fontSize: 13, color: C.white, fontWeight: 700 }}>Order #{order.id}</span><span style={{ fontFamily: mono, fontSize: 11, color: C.textDim, marginLeft: 12 }}>{order.date}</span></div>
+                  <span style={{ fontFamily: mono, fontSize: 10, letterSpacing: "2px", padding: "4px 10px", background: order.status === "Confirmed" ? "rgba(74,222,128,0.1)" : "rgba(250,204,21,0.1)", color: order.status === "Confirmed" ? "#4ade80" : "#facc15", border: `1px solid ${order.status === "Confirmed" ? "rgba(74,222,128,0.2)" : "rgba(250,204,21,0.2)"}` }}>{order.status.toUpperCase()}</span>
+                </div>
+                {order.items.map((item, j) => (
+                  <div key={j} style={{ display: "flex", justifyContent: "space-between", fontFamily: mono, fontSize: 12, color: C.textMuted, marginBottom: 6 }}><span>{item.name} ({item.type}) {"\u00D7"} {item.qty}</span><span>{"\u20B9"}{(item.price * item.qty).toLocaleString("en-IN")}</span></div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "flex-end", fontFamily: mono, fontSize: 15, color: C.white, fontWeight: 700, marginTop: 12, paddingTop: 12, borderTop: `1px solid ${C.border}` }}>{"\u20B9"}{order.total.toLocaleString("en-IN")}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  // ── PROFILE EDIT VIEW ──
   if (mode === "profile" && user) {
     return (
-      <section style={{ paddingTop: 120, maxWidth: 700, margin: "0 auto", padding: "120px 24px 80px" }}>
-        <div style={{ textAlign: "center", marginBottom: 48, padding: "40px 24px", background: `linear-gradient(180deg, rgba(40,55,90,0.2) 0%, transparent 100%)` }}>
-          <div style={{ width: 64, height: 64, borderRadius: "50%", border: `2px solid ${C.accent}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontFamily: sans, fontSize: 28, fontWeight: 700, color: C.white }}>{user.name.charAt(0).toUpperCase()}</div>
-          <h1 style={{ ...hdg, fontSize: 28, marginBottom: 4 }}>Welcome, {user.name.split(" ")[0]}</h1>
-          <p style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>{user.email}</p>
+      <section style={{ paddingTop: 120, maxWidth: 600, margin: "0 auto", padding: "120px 24px 80px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+          <button onClick={() => setMode("orders")} style={{ background: "none", border: "none", cursor: "pointer" }}><Icon name="arrowLeft" size={20} /></button>
+          <h1 style={{ ...hdg, fontSize: 22, margin: 0 }}>EDIT PROFILE</h1>
         </div>
-
-        {saved && <div style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)", padding: "12px 20px", marginBottom: 24, fontFamily: mono, fontSize: 12, color: "#4ade80", textAlign: "center", letterSpacing: "1px" }}>PROFILE SAVED SUCCESSFULLY</div>}
-
-        {/* Edit profile */}
+        {saved && <div style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)", padding: "12px 20px", marginBottom: 24, fontFamily: mono, fontSize: 12, color: "#4ade80", textAlign: "center" }}>CHANGES SAVED</div>}
         <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: 28, marginBottom: 24 }}>
-          <h3 style={{ fontFamily: mono, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 24 }}>Profile Details</h3>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div><label style={labelS}>Full Name</label><input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={iS} /></div>
-            <div><label style={labelS}>Email</label><input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={iS} /></div>
-            <div><label style={labelS}>WhatsApp Number</label><input type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="+91 98765 43210" style={iS} /></div>
+            <div><label style={labelS}>Full Name *</label><input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={iS} /></div>
+            <div><label style={labelS}>Email *</label><input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={iS} /></div>
+            <div><label style={labelS}>WhatsApp Number *</label><input type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="+91 98765 43210" style={iS} /></div>
             <div><label style={labelS}>PIN (for login)</label><input type="password" value={form.pin} onChange={e => setForm(p => ({ ...p, pin: e.target.value }))} style={iS} /></div>
           </div>
           <div style={{ marginTop: 16 }}><label style={labelS}>Shipping Address</label><textarea value={form.address} onChange={e => setForm(p => ({ ...p, address: e.target.value }))} placeholder="House/flat, street, city, state, PIN code" rows={3} style={{ ...iS, resize: "vertical" }} /></div>
           {error && <div style={{ fontFamily: mono, fontSize: 11, color: "#ef4444", marginTop: 12 }}>{error}</div>}
           <button onClick={handleUpdate} style={{ ...btnO, background: C.white, color: C.bg, fontWeight: 700, border: "none", marginTop: 20, width: "100%", textAlign: "center" }}>SAVE CHANGES</button>
         </div>
-
-        {/* Order history */}
-        <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: 28, marginBottom: 24 }}>
-          <h3 style={{ fontFamily: mono, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 20 }}>Order History</h3>
-          {orders.length === 0 ? (
-            <div style={{ fontFamily: mono, fontSize: 12, color: C.textDim, textAlign: "center", padding: "24px 0" }}>
-              No orders yet. <button onClick={() => setPage("shop")} style={{ background: "none", border: "none", color: "#4a9eff", fontFamily: mono, fontSize: 12, cursor: "pointer" }}>Browse the catalog</button>
-            </div>
-          ) : (
-            orders.map((order, i) => (
-              <div key={i} style={{ padding: "16px 0", borderBottom: i < orders.length - 1 ? `1px solid ${C.border}` : "none" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                  <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>Order #{order.id}</span>
-                  <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>{order.date}</span>
-                </div>
-                {order.items.map((item, j) => (
-                  <div key={j} style={{ fontFamily: mono, fontSize: 12, color: C.textMuted, marginBottom: 4 }}>
-                    {item.name} ({item.type}) {"\u00D7"} {item.qty} {"\u2014"} {"\u20B9"}{(item.price * item.qty).toLocaleString("en-IN")}
-                  </div>
-                ))}
-                <div style={{ fontFamily: mono, fontSize: 13, color: C.white, fontWeight: 700, marginTop: 8 }}>Total: {"\u20B9"}{order.total.toLocaleString("en-IN")}</div>
-                <span style={{ fontFamily: mono, fontSize: 10, letterSpacing: "2px", padding: "3px 8px", background: order.status === "Confirmed" ? "rgba(74,222,128,0.1)" : "rgba(250,204,21,0.1)", color: order.status === "Confirmed" ? "#4ade80" : "#facc15", borderRadius: 2, marginTop: 8, display: "inline-block" }}>{order.status.toUpperCase()}</span>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Actions */}
-        <div style={{ display: "flex", gap: 16 }}>
-          <button onClick={handleLogout} style={{ ...btnO, flex: 1, textAlign: "center", fontSize: 11 }}>SIGN OUT</button>
-          <button onClick={handleDeleteAccount} style={{ ...btnO, flex: 1, textAlign: "center", fontSize: 11, color: "#ef4444", borderColor: "rgba(239,68,68,0.3)" }}>DELETE ACCOUNT</button>
+        <div style={{ background: "rgba(239,68,68,0.03)", border: "1px solid rgba(239,68,68,0.15)", padding: 24 }}>
+          <h3 style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: "#ef4444", letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>DANGER ZONE</h3>
+          <p style={{ fontFamily: mono, fontSize: 11, color: C.textDim, marginBottom: 16 }}>Permanently delete your account and all order history from this device.</p>
+          <button onClick={handleDeleteAccount} style={{ ...btnO, fontSize: 10, padding: "10px 20px", color: "#ef4444", borderColor: "rgba(239,68,68,0.3)" }}>DELETE ACCOUNT</button>
         </div>
       </section>
     );
@@ -817,29 +887,16 @@ function AccountPage({ setPage }) {
   return (
     <section style={{ paddingTop: 120, maxWidth: 440, margin: "0 auto", padding: "120px 24px 80px" }}>
       <div style={{ textAlign: "center", marginBottom: 40 }}>
-        <div style={{ width: 56, height: 56, borderRadius: "50%", border: `2px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
-          <Icon name="sliders" size={24} />
-        </div>
+        <div style={{ width: 56, height: 56, borderRadius: "50%", border: `2px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}><Icon name="sliders" size={24} /></div>
         <h1 style={{ ...hdg, fontSize: 28, marginBottom: 8 }}>{mode === "login" ? "SIGN IN" : "CREATE ACCOUNT"}</h1>
-        <p style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>
-          {mode === "login" ? "Sign in to track orders and auto-fill checkout." : "Create an account to save your details and track orders."}
-        </p>
+        <p style={{ fontFamily: mono, fontSize: 12, color: C.textDim }}>{mode === "login" ? "Sign in to track orders and auto-fill checkout." : "Create an account to save your details and track orders."}</p>
       </div>
-
-      {/* Tab toggle */}
       <div style={{ display: "flex", marginBottom: 32, border: `1px solid ${C.border}` }}>
         {["login", "register"].map(m => (
-          <button key={m} onClick={() => { setMode(m); setError(""); }} style={{
-            flex: 1, padding: "12px 0", fontFamily: mono, fontSize: 11, letterSpacing: "2px",
-            textTransform: "uppercase", background: mode === m ? C.white : "transparent",
-            color: mode === m ? C.bg : C.textDim, border: "none", cursor: "pointer",
-            fontWeight: mode === m ? 700 : 400, transition: "all 0.3s",
-          }}>{m === "login" ? "Sign In" : "Register"}</button>
+          <button key={m} onClick={() => { setMode(m); setError(""); }} style={{ flex: 1, padding: "12px 0", fontFamily: mono, fontSize: 11, letterSpacing: "2px", textTransform: "uppercase", background: mode === m ? C.white : "transparent", color: mode === m ? C.bg : C.textDim, border: "none", cursor: "pointer", fontWeight: mode === m ? 700 : 400, transition: "all 0.3s" }}>{m === "login" ? "Sign In" : "Register"}</button>
         ))}
       </div>
-
       {error && <div style={{ fontFamily: mono, fontSize: 11, color: "#ef4444", marginBottom: 16, padding: "10px 16px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>{error}</div>}
-
       {mode === "login" ? (
         <>
           <div style={{ marginBottom: 16 }}><label style={labelS}>Email</label><input type="email" value={loginForm.email} onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))} placeholder="you@email.com" style={iS} /></div>
@@ -850,17 +907,13 @@ function AccountPage({ setPage }) {
         <>
           <div style={{ marginBottom: 16 }}><label style={labelS}>Full Name *</label><input type="text" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Rahul Sharma" style={iS} /></div>
           <div style={{ marginBottom: 16 }}><label style={labelS}>Email *</label><input type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="you@email.com" style={iS} /></div>
-          <div style={{ marginBottom: 16 }}><label style={labelS}>WhatsApp Number</label><input type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="+91 98765 43210" style={iS} /></div>
+          <div style={{ marginBottom: 16 }}><label style={labelS}>WhatsApp Number *</label><input type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="+91 98765 43210" style={iS} /></div>
           <div style={{ marginBottom: 16 }}><label style={labelS}>Shipping Address</label><textarea value={form.address} onChange={e => setForm(p => ({ ...p, address: e.target.value }))} placeholder="House/flat, street, city, state, PIN code" rows={2} style={{ ...iS, resize: "vertical" }} /></div>
           <div style={{ marginBottom: 24 }}><label style={labelS}>Create PIN * (4+ characters)</label><input type="password" value={form.pin} onChange={e => setForm(p => ({ ...p, pin: e.target.value }))} placeholder="Used to sign in later" style={iS} onKeyDown={e => { if (e.key === "Enter") handleRegister(); }} /></div>
           <button onClick={handleRegister} style={{ width: "100%", ...btnO, background: C.white, color: C.bg, fontWeight: 700, textAlign: "center", border: "none" }}>CREATE ACCOUNT</button>
         </>
       )}
-
-      <div style={{ textAlign: "center", marginTop: 24, fontFamily: mono, fontSize: 11, color: C.textDim, lineHeight: 1.8 }}>
-        Your data is stored locally on this device only.
-        <br />No passwords are sent to any server.
-      </div>
+      <div style={{ textAlign: "center", marginTop: 24, fontFamily: mono, fontSize: 11, color: C.textDim, lineHeight: 1.8 }}>Your data is stored locally on this device only.<br />No passwords are sent to any server.</div>
     </section>
   );
 }
@@ -918,7 +971,8 @@ export default function Home() {
       {page === "about" && <AboutPage />}
       {page === "contact" && <ContactPage />}
       {page === "forum" && <Placeholder title="FORUM" desc="Community discussion board for builders across India. Share your builds, ask questions, help others. Coming soon." />}
-      {page === "signin" && <AccountPage setPage={handleSetPage} />}
+      {page === "signin" && <AccountPage setPage={handleSetPage} view="orders" />}
+      {page === "profile" && <AccountPage setPage={handleSetPage} view="profile" />}
       <Footer />
     </div>
   );
