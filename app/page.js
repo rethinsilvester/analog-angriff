@@ -18,34 +18,37 @@ const PRODUCT_TYPES = ["PCB", "Full Kit", "Components"];
 const DIFFICULTY_LEVELS = ["Beginner", "Easy", "Intermediate", "Advanced", "Expert"];
 
 const PRODUCTS = [
-  { id: 1, name: "Screamer PCB", ref: "TS-808 Clone", price: 249, type: "PCB", effectCat: "Overdrive & Distortion", difficulty: "Beginner", tag: "Popular", desc: "Classic mid-hump overdrive PCB. Through-hole, single-sided." },
-  { id: 2, name: "Golden Horse PCB", ref: "Klon Centaur", price: 349, type: "PCB", effectCat: "Overdrive & Distortion", difficulty: "Intermediate", tag: "Popular", desc: "Transparent overdrive with charge pump. Premium PCB layout." },
-  { id: 3, name: "Trinity Drive PCB", ref: "3-in-1 Hybrid OD", price: 449, type: "PCB", effectCat: "Overdrive & Distortion", difficulty: "Advanced", tag: "New", desc: "TS + Timmy + Klon topology. 4-position clipping selector." },
-  { id: 4, name: "Buzz Bomb PCB", ref: "Fuzz Face Clone", price: 199, type: "PCB", effectCat: "Fuzz", difficulty: "Beginner", tag: "", desc: "Classic germanium fuzz. Simple 2-transistor circuit." },
-  { id: 5, name: "Muff Monster PCB", ref: "Big Muff Pi", price: 299, type: "PCB", effectCat: "Fuzz", difficulty: "Easy", tag: "Popular", desc: "4-stage fuzz with tone stack. Sustain for days." },
-  { id: 6, name: "Phase Drift PCB", ref: "Phase 90 Clone", price: 349, type: "PCB", effectCat: "Modulation & Delay", difficulty: "Intermediate", tag: "", desc: "4-stage OTA phaser. LM13700 based." },
-  { id: 7, name: "Echo Chamber PCB", ref: "PT2399 Delay", price: 299, type: "PCB", effectCat: "Modulation & Delay", difficulty: "Easy", tag: "", desc: "Analog-voiced digital delay. Up to 600ms." },
-  { id: 8, name: "Clean Boost PCB", ref: "LPB-1 Style", price: 149, type: "PCB", effectCat: "Boost", difficulty: "Beginner", tag: "", desc: "Simple JFET boost. Up to +20dB clean gain." },
-  { id: 9, name: "Squeeze Box PCB", ref: "Dyna Comp Clone", price: 299, type: "PCB", effectCat: "Compression", difficulty: "Easy", tag: "", desc: "OTA compressor with attack control." },
-  { id: 10, name: "Tube Pre PCB", ref: "Preamp Circuit", price: 399, type: "PCB", effectCat: "Preamp", difficulty: "Advanced", tag: "New", desc: "12AX7 tube preamp PCB with HV supply section." },
-  { id: 11, name: "Low Growl PCB", ref: "Bass Overdrive", price: 299, type: "PCB", effectCat: "Bass Pedals", difficulty: "Intermediate", tag: "", desc: "Bass overdrive with clean blend and low-pass filter." },
-  { id: 12, name: "Signal Split PCB", ref: "ABY Switcher", price: 199, type: "PCB", effectCat: "Utility", difficulty: "Beginner", tag: "", desc: "Buffered ABY splitter. Phase switch, ground lift." },
-  { id: 101, name: "Screamer Kit", ref: "TS-808 Clone", price: 1499, type: "Full Kit", effectCat: "Overdrive & Distortion", difficulty: "Beginner", tag: "Bestseller", desc: "Complete kit with PCB, components, enclosure, knobs, jacks." },
-  { id: 102, name: "Golden Horse Kit", ref: "Klon Centaur", price: 2199, type: "Full Kit", effectCat: "Overdrive & Distortion", difficulty: "Intermediate", tag: "Popular", desc: "Full Klon clone with germanium diodes and charge pump." },
-  { id: 103, name: "Trinity Drive Kit", ref: "3-in-1 Hybrid OD", price: 2999, type: "Full Kit", effectCat: "Overdrive & Distortion", difficulty: "Advanced", tag: "New", desc: "Flagship kit. 3 overdrives, JFET buffer, 4-way clipping. Hammond 1590BB." },
-  { id: 104, name: "Buzz Bomb Kit", ref: "Fuzz Face Clone", price: 999, type: "Full Kit", effectCat: "Fuzz", difficulty: "Beginner", tag: "Bestseller", desc: "Germanium fuzz kit with matched transistor pair." },
-  { id: 105, name: "Muff Monster Kit", ref: "Big Muff Pi", price: 1599, type: "Full Kit", effectCat: "Fuzz", difficulty: "Easy", tag: "", desc: "Full Big Muff build with tone bypass mod." },
-  { id: 106, name: "Echo Chamber Kit", ref: "PT2399 Delay", price: 1799, type: "Full Kit", effectCat: "Modulation & Delay", difficulty: "Easy", tag: "Popular", desc: "Complete delay with modulation. PT2399 chip." },
-  { id: 107, name: "Phase Drift Kit", ref: "Phase 90 Clone", price: 1999, type: "Full Kit", effectCat: "Modulation & Delay", difficulty: "Intermediate", tag: "", desc: "4-stage phaser kit. LM13700 OTA." },
-  { id: 108, name: "Clean Boost Kit", ref: "LPB-1 Style", price: 799, type: "Full Kit", effectCat: "Boost", difficulty: "Beginner", tag: "", desc: "Simplest kit. 1 transistor, 5 components." },
-  { id: 109, name: "Squeeze Box Kit", ref: "Dyna Comp Clone", price: 1699, type: "Full Kit", effectCat: "Compression", difficulty: "Easy", tag: "", desc: "OTA compressor with attack knob." },
-  { id: 110, name: "Low Growl Kit", ref: "Bass Overdrive", price: 1899, type: "Full Kit", effectCat: "Bass Pedals", difficulty: "Intermediate", tag: "New", desc: "Bass overdrive with clean blend." },
-  { id: 201, name: "9V Power Supply & Cables", ref: "Regulated PSU", price: 499, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", desc: "Clean 9V DC supply with 5 daisy-chain cables." },
-  { id: 202, name: "Enclosure — 1590B", ref: "Pre-drilled", price: 349, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", desc: "Powder-coated 1590B, pre-drilled for 3-knob layouts." },
-  { id: 203, name: "Enclosure — 1590BB", ref: "Pre-drilled", price: 449, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", desc: "Larger 1590BB for complex builds." },
-  { id: 204, name: "Premium Knob Set (6pc)", ref: "Davies 1900h", price: 199, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", desc: "6 fluted knobs. Fits 6mm shaft pots." },
-  { id: 205, name: "3PDT Footswitch + PCB", ref: "True Bypass", price: 149, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", desc: "3PDT stomp switch with breakout PCB." },
-  { id: 206, name: "Resistor & Cap Pack", ref: "250pc Assorted", price: 399, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", desc: "250 assorted resistors & caps for pedal building." },
+  // PCBs — add your images to /public/products/ and set the path here
+  { id: 1, name: "Screamer PCB", ref: "TS-808 Clone", price: 249, type: "PCB", effectCat: "Overdrive & Distortion", difficulty: "Beginner", tag: "Popular", image: "", desc: "Classic mid-hump overdrive PCB. Through-hole, single-sided." },
+  { id: 2, name: "Golden Horse PCB", ref: "Klon Centaur", price: 349, type: "PCB", effectCat: "Overdrive & Distortion", difficulty: "Intermediate", tag: "Popular", image: "", desc: "Transparent overdrive with charge pump. Premium PCB layout." },
+  { id: 3, name: "Trinity Drive PCB", ref: "3-in-1 Hybrid OD", price: 449, type: "PCB", effectCat: "Overdrive & Distortion", difficulty: "Advanced", tag: "New", image: "", desc: "TS + Timmy + Klon topology. 4-position clipping selector." },
+  { id: 4, name: "Buzz Bomb PCB", ref: "Fuzz Face Clone", price: 199, type: "PCB", effectCat: "Fuzz", difficulty: "Beginner", tag: "", image: "", desc: "Classic germanium fuzz. Simple 2-transistor circuit." },
+  { id: 5, name: "Muff Monster PCB", ref: "Big Muff Pi", price: 299, type: "PCB", effectCat: "Fuzz", difficulty: "Easy", tag: "Popular", image: "", desc: "4-stage fuzz with tone stack. Sustain for days." },
+  { id: 6, name: "Phase Drift PCB", ref: "Phase 90 Clone", price: 349, type: "PCB", effectCat: "Modulation & Delay", difficulty: "Intermediate", tag: "", image: "", desc: "4-stage OTA phaser. LM13700 based." },
+  { id: 7, name: "Echo Chamber PCB", ref: "PT2399 Delay", price: 299, type: "PCB", effectCat: "Modulation & Delay", difficulty: "Easy", tag: "", image: "", desc: "Analog-voiced digital delay. Up to 600ms." },
+  { id: 8, name: "Clean Boost PCB", ref: "LPB-1 Style", price: 149, type: "PCB", effectCat: "Boost", difficulty: "Beginner", tag: "", image: "", desc: "Simple JFET boost. Up to +20dB clean gain." },
+  { id: 9, name: "Squeeze Box PCB", ref: "Dyna Comp Clone", price: 299, type: "PCB", effectCat: "Compression", difficulty: "Easy", tag: "", image: "", desc: "OTA compressor with attack control." },
+  { id: 10, name: "Tube Pre PCB", ref: "Preamp Circuit", price: 399, type: "PCB", effectCat: "Preamp", difficulty: "Advanced", tag: "New", image: "", desc: "12AX7 tube preamp PCB with HV supply section." },
+  { id: 11, name: "Low Growl PCB", ref: "Bass Overdrive", price: 299, type: "PCB", effectCat: "Bass Pedals", difficulty: "Intermediate", tag: "", image: "", desc: "Bass overdrive with clean blend and low-pass filter." },
+  { id: 12, name: "Signal Split PCB", ref: "ABY Switcher", price: 199, type: "PCB", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Buffered ABY splitter. Phase switch, ground lift." },
+  // Full Kits
+  { id: 101, name: "Screamer Kit", ref: "TS-808 Clone", price: 1499, type: "Full Kit", effectCat: "Overdrive & Distortion", difficulty: "Beginner", tag: "Bestseller", image: "", desc: "Complete kit with PCB, components, enclosure, knobs, jacks." },
+  { id: 102, name: "Golden Horse Kit", ref: "Klon Centaur", price: 2199, type: "Full Kit", effectCat: "Overdrive & Distortion", difficulty: "Intermediate", tag: "Popular", image: "", desc: "Full Klon clone with germanium diodes and charge pump." },
+  { id: 103, name: "Trinity Drive Kit", ref: "3-in-1 Hybrid OD", price: 2999, type: "Full Kit", effectCat: "Overdrive & Distortion", difficulty: "Advanced", tag: "New", image: "", desc: "Flagship kit. 3 overdrives, JFET buffer, 4-way clipping. Hammond 1590BB." },
+  { id: 104, name: "Buzz Bomb Kit", ref: "Fuzz Face Clone", price: 999, type: "Full Kit", effectCat: "Fuzz", difficulty: "Beginner", tag: "Bestseller", image: "", desc: "Germanium fuzz kit with matched transistor pair." },
+  { id: 105, name: "Muff Monster Kit", ref: "Big Muff Pi", price: 1599, type: "Full Kit", effectCat: "Fuzz", difficulty: "Easy", tag: "", image: "", desc: "Full Big Muff build with tone bypass mod." },
+  { id: 106, name: "Echo Chamber Kit", ref: "PT2399 Delay", price: 1799, type: "Full Kit", effectCat: "Modulation & Delay", difficulty: "Easy", tag: "Popular", image: "", desc: "Complete delay with modulation. PT2399 chip." },
+  { id: 107, name: "Phase Drift Kit", ref: "Phase 90 Clone", price: 1999, type: "Full Kit", effectCat: "Modulation & Delay", difficulty: "Intermediate", tag: "", image: "", desc: "4-stage phaser kit. LM13700 OTA." },
+  { id: 108, name: "Clean Boost Kit", ref: "LPB-1 Style", price: 799, type: "Full Kit", effectCat: "Boost", difficulty: "Beginner", tag: "", image: "", desc: "Simplest kit. 1 transistor, 5 components." },
+  { id: 109, name: "Squeeze Box Kit", ref: "Dyna Comp Clone", price: 1699, type: "Full Kit", effectCat: "Compression", difficulty: "Easy", tag: "", image: "", desc: "OTA compressor with attack knob." },
+  { id: 110, name: "Low Growl Kit", ref: "Bass Overdrive", price: 1899, type: "Full Kit", effectCat: "Bass Pedals", difficulty: "Intermediate", tag: "New", image: "", desc: "Bass overdrive with clean blend." },
+  // Components
+  { id: 201, name: "9V Power Supply & Cables", ref: "Regulated PSU", price: 499, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Clean 9V DC supply with 5 daisy-chain cables." },
+  { id: 202, name: "Enclosure — 1590B", ref: "Pre-drilled", price: 349, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Powder-coated 1590B, pre-drilled for 3-knob layouts." },
+  { id: 203, name: "Enclosure — 1590BB", ref: "Pre-drilled", price: 449, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Larger 1590BB for complex builds." },
+  { id: 204, name: "Premium Knob Set (6pc)", ref: "Davies 1900h", price: 199, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "6 fluted knobs. Fits 6mm shaft pots." },
+  { id: 205, name: "3PDT Footswitch + PCB", ref: "True Bypass", price: 149, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "3PDT stomp switch with breakout PCB." },
+  { id: 206, name: "Resistor & Cap Pack", ref: "250pc Assorted", price: 399, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "250 assorted resistors & caps for pedal building." },
 ];
 
 const STEPS = [
@@ -93,6 +96,18 @@ function PedalGraphic({ seed = 0, height = 180 }) {
       </div>
       <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 6px #ef444466", position: "absolute", top: "42%" }} />
       <div style={{ width: 18, height: 18, borderRadius: "50%", border: `1.5px solid ${C.borderLight}`, position: "absolute", bottom: "14%" }} />
+    </div>
+  );
+}
+
+/* ── Product image: shows real photo if available, placeholder if not ── */
+function ProductImage({ product, height = 180 }) {
+  const [imgError, setImgError] = useState(false);
+  if (!product.image || imgError) return <PedalGraphic seed={product.id} height={height} />;
+  return (
+    <div style={{ width: "100%", height, overflow: "hidden", background: C.bgCard }}>
+      <img src={product.image} alt={product.name} onError={() => setImgError(true)}
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
     </div>
   );
 }
@@ -289,7 +304,13 @@ function Hero({ setPage }) {
     <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "140px 24px 80px", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 30%, rgba(40,55,90,0.4) 0%, transparent 60%), linear-gradient(180deg, #0f1420 0%, ${C.bg} 50%, ${C.bgLight} 100%)` }} />
       <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: `linear-gradient(${C.accent} 1px, transparent 1px), linear-gradient(90deg, ${C.accent} 1px, transparent 1px)`, backgroundSize: "80px 80px" }} />
-      <div style={{ position: "absolute", top: "15%", left: "50%", transform: "translateX(-50%)", width: "min(700px,80vw)", height: "min(420px,50vw)", background: "linear-gradient(135deg, rgba(30,40,60,0.6), rgba(20,28,45,0.4))", borderRadius: 8, border: `1px solid ${C.border}`, boxShadow: "0 40px 80px rgba(0,0,0,0.5)" }} />
+      {/* Hero image — replace src with your own photo e.g. "/hero-bg.jpg" */}
+      {/* To use: place hero-bg.jpg in /public/ folder */}
+      <div style={{ position: "absolute", top: "15%", left: "50%", transform: "translateX(-50%)", width: "min(700px,80vw)", height: "min(420px,50vw)", borderRadius: 8, border: `1px solid ${C.border}`, boxShadow: "0 40px 80px rgba(0,0,0,0.5)", overflow: "hidden" }}>
+        {/* Uncomment the img tag below and remove the gradient div when you have a hero image */}
+        {/* <img src="/hero-bg.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.6 }} /> */}
+        <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(30,40,60,0.6), rgba(20,28,45,0.4))" }} />
+      </div>
       <div style={{ position: "relative", zIndex: 1 }}>
         <h1 style={{ fontFamily: sans, fontSize: "clamp(48px,10vw,100px)", fontWeight: 700, letterSpacing: "8px", color: C.white, lineHeight: 1, margin: "0 0 24px" }}>ANALOG ANGRIFF</h1>
         <p style={{ fontFamily: mono, fontSize: "clamp(13px,1.4vw,16px)", color: C.textMuted, maxWidth: 600, lineHeight: 1.7, margin: "0 auto 48px" }}>Premium DIY guitar pedal kits engineered for the Indian musician. Build your sound from the circuit up.</p>
@@ -317,7 +338,7 @@ function FeaturedRow({ title, products, addToCart }) {
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(v, products.length)},1fr)`, gap: 18 }}>
           {products.slice(off, off + v).map(p => (
             <div key={p.id} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", cursor: "pointer" }} onClick={() => addToCart(p)}>
-              <PedalGraphic seed={p.id} height={150} />
+              <ProductImage product={p} height={150} />
               <div style={{ padding: "12px 14px" }}>
                 <div style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: C.white, textTransform: "uppercase", marginBottom: 3, lineHeight: 1.4 }}>{p.name}</div>
                 <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, marginBottom: 6 }}>{p.ref}</div>
@@ -502,7 +523,7 @@ function ShopPage({ addToCart, initialType = "", initialSearch = "", searchId = 
                   <div key={p.id} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", transition: "border-color 0.3s" }}
                     onMouseOver={e => e.currentTarget.style.borderColor = C.borderLight}
                     onMouseOut={e => e.currentTarget.style.borderColor = C.border}>
-                    <PedalGraphic seed={p.id} height={140} />
+                    <ProductImage product={p} height={140} />
                     <div style={{ padding: "12px 14px" }}>
                       {p.tag && <div style={{ fontFamily: mono, fontSize: 9, letterSpacing: "2px", color: p.tag === "New" ? "#4ade80" : p.tag === "Bestseller" ? "#f59e0b" : "#60a5fa", marginBottom: 4, textTransform: "uppercase" }}>{p.tag}</div>}
                       <div style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: C.white, textTransform: "uppercase", marginBottom: 2, lineHeight: 1.4 }}>{p.name}</div>
