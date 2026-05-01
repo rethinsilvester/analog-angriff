@@ -302,21 +302,19 @@ function Nav({ cartCount, page, setPage, onSearch }) {
 function Hero({ setPage }) {
   return (
     <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "140px 24px 80px", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 30%, rgba(40,55,90,0.4) 0%, transparent 60%), linear-gradient(180deg, #0f1420 0%, ${C.bg} 50%, ${C.bgLight} 100%)` }} />
-      <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: `linear-gradient(${C.accent} 1px, transparent 1px), linear-gradient(90deg, ${C.accent} 1px, transparent 1px)`, backgroundSize: "80px 80px" }} />
-      {/* Hero image — replace src with your own photo e.g. "/hero-bg.jpg" */}
-      {/* To use: place hero-bg.jpg in /public/ folder */}
-      <div style={{ position: "absolute", top: "15%", left: "50%", transform: "translateX(-50%)", width: "min(700px,80vw)", height: "min(420px,50vw)", borderRadius: 8, border: `1px solid ${C.border}`, boxShadow: "0 40px 80px rgba(0,0,0,0.5)", overflow: "hidden" }}>
-        {/* Uncomment the img tag below and remove the gradient div when you have a hero image */}
-        {/* <img src="/hero-bg.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.6 }} /> */}
-        <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(30,40,60,0.6), rgba(20,28,45,0.4))" }} />
+      {/* Full-bleed background image — place your photo at /public/hero-bg.jpg */}
+      <div style={{ position: "absolute", inset: 0 }}>
+        <img src="/hero-bg.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} onError={e => { e.target.style.display = "none"; }} />
       </div>
+      {/* Dark overlay so text stays readable */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,12,20,0.7) 0%, rgba(15,20,30,0.65) 40%, rgba(21,26,37,0.85) 100%)" }} />
+
       <div style={{ position: "relative", zIndex: 1 }}>
-        <h1 style={{ fontFamily: sans, fontSize: "clamp(48px,10vw,100px)", fontWeight: 700, letterSpacing: "8px", color: C.white, lineHeight: 1, margin: "0 0 24px" }}>ANALOG ANGRIFF</h1>
-        <p style={{ fontFamily: mono, fontSize: "clamp(13px,1.4vw,16px)", color: C.textMuted, maxWidth: 600, lineHeight: 1.7, margin: "0 auto 48px" }}>Premium DIY guitar pedal kits engineered for the Indian musician. Build your sound from the circuit up.</p>
+        <h1 style={{ fontFamily: sans, fontSize: "clamp(48px,10vw,100px)", fontWeight: 700, letterSpacing: "8px", color: C.white, lineHeight: 1, margin: "0 0 24px", textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}>ANALOG ANGRIFF</h1>
+        <p style={{ fontFamily: mono, fontSize: "clamp(13px,1.4vw,16px)", color: "rgba(255,255,255,0.75)", maxWidth: 600, lineHeight: 1.7, margin: "0 auto 48px" }}>Premium DIY guitar pedal kits engineered for the Indian musician. Build your sound from the circuit up.</p>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
           <button onClick={() => setPage("shop")} style={{ ...btnO, background: C.white, color: C.bg, border: "none", fontWeight: 700 }}>BROWSE CATALOG</button>
-          <button onClick={() => setPage("about")} style={btnO}>OUR STORY</button>
+          <button onClick={() => setPage("about")} style={{ ...btnO, borderColor: "rgba(255,255,255,0.3)" }}>OUR STORY</button>
         </div>
       </div>
       <div onClick={() => document.getElementById("featured")?.scrollIntoView({ behavior: "smooth" })} style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, cursor: "pointer", opacity: 0.6, transition: "opacity 0.3s" }} onMouseOver={e => e.currentTarget.style.opacity = 1} onMouseOut={e => e.currentTarget.style.opacity = 0.6}>
