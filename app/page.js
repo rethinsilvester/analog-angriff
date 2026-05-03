@@ -707,7 +707,7 @@ function AboutPage({ setPage }) {
         {/* Story */}
         <div style={{ fontFamily: mono, fontSize: 14, color: C.textMuted, lineHeight: 2 }}>
           <p style={{ marginBottom: 20 }}>
-            We all started somewhere. I believe anyone can build a guitar pedal {"\u2014"} there is no rocket science involved. If you can hold a soldering iron, you can build tone.
+            Building a guitar pedal {"\u2014"} {"there's"} no rocket science involved. If you can hold a soldering iron and follow a guide, you can build tone.
           </p>
           <p style={{ marginBottom: 20 }}>
             I started building pedals around 2012 during my engineering college days, following articles on{" "}
