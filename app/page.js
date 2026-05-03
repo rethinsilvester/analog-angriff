@@ -366,7 +366,6 @@ function Hero({ setPage }) {
         <p style={{ fontFamily: mono, fontSize: "clamp(13px,1.4vw,16px)", color: "rgba(255,255,255,0.75)", maxWidth: 600, lineHeight: 1.7, margin: "0 auto 48px" }}>Premium DIY guitar pedal kits for musicians and tone enthusiasts. Build your sound from the circuit up.</p>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
           <button onClick={() => setPage("shop")} style={{ ...btnO, background: C.white, color: C.bg, border: "none", fontWeight: 700 }}>BROWSE CATALOG</button>
-          <button onClick={() => setPage("about")} style={{ ...btnO, borderColor: "rgba(255,255,255,0.3)" }}>OUR STORY</button>
         </div>
       </div>
       <div onClick={() => document.getElementById("featured")?.scrollIntoView({ behavior: "smooth" })} style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, cursor: "pointer", opacity: 0.6, transition: "opacity 0.3s" }} onMouseOver={e => e.currentTarget.style.opacity = 1} onMouseOut={e => e.currentTarget.style.opacity = 0.6}>
@@ -440,11 +439,6 @@ function SignalPath() {
             </div>
             {i < 3 && <div style={{ width: 40, height: 1, background: C.border, marginTop: 28, flexShrink: 0 }} />}
           </div>
-        ))}
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", borderTop: `1px solid ${C.border}`, marginTop: 56 }}>
-        {[["SPEC-01:", "WIMA CAPACITORS"], ["SPEC-02:", "NEUTRIK JACKS"], ["SPEC-03:", "ALPHA POTS"]].map(([a, b], i) => (
-          <div key={i} style={{ padding: "20px 16px", borderRight: i < 2 ? `1px solid ${C.border}` : "none", fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "2px", textAlign: "center" }}>{a} {b}</div>
         ))}
       </div>
     </section>
@@ -1043,6 +1037,94 @@ function Breadcrumb({ items, setPage }) {
   );
 }
 
+/* ══ PRIVACY POLICY ══ */
+function PrivacyPage({ setPage }) {
+  return (
+    <section style={{ paddingTop: 92 }}>
+      <div style={{ padding: "12px clamp(16px,4vw,48px)", maxWidth: 800, margin: "0 auto" }}>
+        <Breadcrumb items={[{ label: "Home", page: "home" }, { label: "Privacy Policy" }]} setPage={setPage} />
+      </div>
+      <div style={{ maxWidth: 800, margin: "0 auto", padding: "32px clamp(16px,4vw,48px) 80px" }}>
+        <h1 style={{ ...hdg, fontSize: 32, marginBottom: 32 }}>PRIVACY POLICY</h1>
+        <div style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 2 }}>
+          <p style={{ marginBottom: 20 }}>Last updated: January 2026</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>What we collect</h3>
+          <p style={{ marginBottom: 20 }}>When you place an order or create an account, we collect your name, email address, phone number, and shipping address. This information is used solely to process and deliver your order, and to communicate with you about your purchase.</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>How we store it</h3>
+          <p style={{ marginBottom: 20 }}>Account data is currently stored locally on your device using browser storage. We do not store your account credentials on our servers. Order communications happen via WhatsApp and email, which are subject to those {"platforms'"} respective privacy policies.</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>Payment information</h3>
+          <p style={{ marginBottom: 20 }}>We do not collect, store, or process credit card or bank account details. All payments are made directly through UPI (Unified Payments Interface) between your banking app and ours. We only receive your UTR/transaction reference number to verify payment.</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>Cookies and tracking</h3>
+          <p style={{ marginBottom: 20 }}>This website does not use tracking cookies, analytics scripts, or third-party advertising. We do not sell, share, or trade your personal information with any third parties.</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>Your rights</h3>
+          <p style={{ marginBottom: 20 }}>You can delete your account and all associated data at any time from your account settings. If you have questions about your data, contact us at hello@analogangriff.com.</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>Changes to this policy</h3>
+          <p>We may update this policy from time to time. Any changes will be posted on this page with an updated revision date.</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══ TRADEMARK NOTICE ══ */
+function TrademarkPage({ setPage }) {
+  return (
+    <section style={{ paddingTop: 92 }}>
+      <div style={{ padding: "12px clamp(16px,4vw,48px)", maxWidth: 800, margin: "0 auto" }}>
+        <Breadcrumb items={[{ label: "Home", page: "home" }, { label: "Trademark Notice" }]} setPage={setPage} />
+      </div>
+      <div style={{ maxWidth: 800, margin: "0 auto", padding: "32px clamp(16px,4vw,48px) 80px" }}>
+        <h1 style={{ ...hdg, fontSize: 32, marginBottom: 32 }}>TRADEMARK NOTICE</h1>
+        <div style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 2 }}>
+          <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: 24, marginBottom: 32 }}>
+            <p style={{ color: C.accent, fontWeight: 700, marginBottom: 12 }}>Important disclaimer regarding product names and references</p>
+            <p>Analog Angriff is an independent DIY electronics project. We design and sell printed circuit boards and component kits for building guitar effects pedals. Our products are inspired by classic and well-known pedal circuits, but are not manufactured by, endorsed by, or affiliated with any of the original manufacturers referenced on this website.</p>
+          </div>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>Third-party trademarks</h3>
+          <p style={{ marginBottom: 20 }}>Product names, brand names, and circuit references used on this website are the trademarks or registered trademarks of their respective owners. These names are used solely for the purpose of identifying the circuit topology or design lineage of our DIY PCB layouts, and to help builders understand which classic sound each project is based on.</p>
+
+          <p style={{ marginBottom: 20 }}>Examples of trademarks referenced on this site include, but are not limited to:</p>
+
+          <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: "16px 24px", marginBottom: 20 }}>
+            {[
+              { name: "Tube Screamer, TS-808, TS-9", owner: "Ibanez / Hoshino Gakki" },
+              { name: "Klon Centaur, Klon KTR", owner: "Klon LLC / Bill Finnegan" },
+              { name: "Big Muff Pi", owner: "Electro-Harmonix" },
+              { name: "Fuzz Face", owner: "Dunlop Manufacturing" },
+              { name: "Phase 90, MXR", owner: "Dunlop Manufacturing" },
+              { name: "Dyna Comp", owner: "Dunlop Manufacturing / MXR" },
+              { name: "Boss, DS-1, DM-2", owner: "Roland Corporation" },
+              { name: "Timmy", owner: "Paul Cochrane" },
+              { name: "LPB-1", owner: "Electro-Harmonix" },
+            ].map((tm, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < 8 ? `1px solid ${C.border}` : "none", flexWrap: "wrap", gap: 8 }}>
+                <span style={{ color: C.white, fontWeight: 700 }}>{tm.name}</span>
+                <span style={{ color: C.textDim }}>{tm.owner}</span>
+              </div>
+            ))}
+          </div>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>Our products</h3>
+          <p style={{ marginBottom: 20 }}>Analog Angriff products are original PCB layouts and kit assemblies designed for educational and hobbyist purposes. While our circuits may be based on well-known topologies, our PCB designs, enclosure artwork, and documentation are original works.</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>Fair use</h3>
+          <p style={{ marginBottom: 20 }}>References to third-party product names are made under nominative fair use to describe the type of circuit a product is based on. No sponsorship, endorsement, or affiliation is implied. If you are a trademark holder and have concerns about how your mark is used on this site, please contact us at hello@analogangriff.com.</p>
+
+          <h3 style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.white, marginBottom: 12, marginTop: 32 }}>DIY community attribution</h3>
+          <p>The DIY guitar pedal community has a long tradition of sharing and building upon classic circuit designs. We acknowledge and respect the original designers and manufacturers whose work has inspired generations of pedal builders. Our goal is to make these educational building experiences accessible to everyone.</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ══ PLACEHOLDER ══ */
 function Placeholder({ title, desc }) {
   return <section style={{ paddingTop: 140, textAlign: "center", maxWidth: 600, margin: "0 auto", padding: "140px 24px 80px" }}><h1 style={{ ...hdg, fontSize: 36, marginBottom: 16 }}>{title}</h1><p style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 1.8 }}>{desc}</p></section>;
@@ -1206,11 +1288,43 @@ function AccountPage({ setPage, view = "orders" }) {
   );
 }
 /* ══ FOOTER ══ */
-function Footer() {
+function Footer({ setPage }) {
+  const footerLinks = {
+    "SHOP": [
+      { label: "PCBs", page: "pcbs" },
+      { label: "Kits", page: "kits" },
+      { label: "Components", page: "components" },
+    ],
+    "COMMUNITY": [
+      { label: "Forum", page: "forum" },
+      { label: "Instagram", href: "https://instagram.com/analogangriff" },
+      { label: "YouTube", href: "https://youtube.com/@analogangriff" },
+    ],
+    "COMPANY": [
+      { label: "About", page: "about" },
+      { label: "Contact", page: "contact" },
+      { label: "Privacy Policy", page: "privacy" },
+      { label: "Trademark Notice", page: "trademark" },
+    ],
+  };
+
   return (
     <footer style={{ borderTop: `1px solid ${C.border}`, marginTop: 40 }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px clamp(16px,4vw,48px) 32px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 48 }}>
-        {[{ t: "SHOP", l: ["PCBs", "Kits", "Components"] }, { t: "COMMUNITY", l: ["Forum", "Instagram", "YouTube"] }, { t: "COMPANY", l: ["About", "Contact", "Privacy Policy"] }].map((c, i) => <div key={i}><h4 style={{ ...lbl, marginBottom: 24 }}>{c.t}</h4>{c.l.map(x => <div key={x} style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, marginBottom: 14, cursor: "pointer" }}>{x}</div>)}</div>)}
+        {Object.entries(footerLinks).map(([title, links]) => (
+          <div key={title}>
+            <h4 style={{ ...lbl, marginBottom: 24 }}>{title}</h4>
+            {links.map(link => link.href ? (
+              <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" style={{ display: "block", fontFamily: mono, fontSize: 13, color: C.textMuted, marginBottom: 14, cursor: "pointer", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseOver={e => e.target.style.color = C.white}
+                onMouseOut={e => e.target.style.color = C.textMuted}>{link.label}</a>
+            ) : (
+              <div key={link.label} onClick={() => setPage(link.page)} style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, marginBottom: 14, cursor: "pointer", transition: "color 0.2s" }}
+                onMouseOver={e => e.target.style.color = C.white}
+                onMouseOut={e => e.target.style.color = C.textMuted}>{link.label}</div>
+            ))}
+          </div>
+        ))}
       </div>
       <div style={{ padding: "24px clamp(16px,4vw,48px)", borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, maxWidth: 1200, margin: "0 auto" }}>
         <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "3px" }}>DESIGNED ON PLANET EARTH FOR HUMANS</span>
@@ -1261,10 +1375,12 @@ export default function Home() {
       {page === "checkout" && <CheckoutPage cart={cart} setPage={handleSetPage} />}
       {page === "about" && <AboutPage setPage={handleSetPage} />}
       {page === "contact" && <ContactPage />}
+      {page === "privacy" && <PrivacyPage setPage={handleSetPage} />}
+      {page === "trademark" && <TrademarkPage setPage={handleSetPage} />}
       {page === "forum" && <Placeholder title="FORUM" desc="Community discussion board for pedal builders. Share your builds, ask questions, help others. Coming soon." />}
       {page === "signin" && <AccountPage setPage={handleSetPage} view="orders" />}
       {page === "profile" && <AccountPage setPage={handleSetPage} view="profile" />}
-      <Footer />
+      <Footer setPage={handleSetPage} />
     </div>
   );
 }
