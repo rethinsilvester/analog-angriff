@@ -42,14 +42,66 @@ const PRODUCTS = [
   { id: 108, name: "Clean Boost Kit", ref: "LPB-1 Style", price: 799, type: "Full Kit", effectCat: "Boost", difficulty: "Beginner", tag: "", image: "", desc: "Simplest kit. 1 transistor, 5 components." },
   { id: 109, name: "Squeeze Box Kit", ref: "Dyna Comp Clone", price: 1699, type: "Full Kit", effectCat: "Compression", difficulty: "Easy", tag: "", image: "", desc: "OTA compressor with attack knob." },
   { id: 110, name: "Low Growl Kit", ref: "Bass Overdrive", price: 1899, type: "Full Kit", effectCat: "Bass Pedals", difficulty: "Intermediate", tag: "New", image: "", desc: "Bass overdrive with clean blend." },
-  // Components
-  { id: 201, name: "9V Power Supply & Cables", ref: "Regulated PSU", price: 499, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Clean 9V DC supply with 5 daisy-chain cables." },
-  { id: 202, name: "Enclosure — 1590B", ref: "Pre-drilled", price: 349, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Powder-coated 1590B, pre-drilled for 3-knob layouts." },
-  { id: 203, name: "Enclosure — 1590BB", ref: "Pre-drilled", price: 449, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Larger 1590BB for complex builds." },
-  { id: 204, name: "Premium Knob Set (6pc)", ref: "Davies 1900h", price: 199, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "6 fluted knobs. Fits 6mm shaft pots." },
-  { id: 205, name: "3PDT Footswitch + PCB", ref: "True Bypass", price: 149, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "3PDT stomp switch with breakout PCB." },
-  { id: 206, name: "Resistor & Cap Pack", ref: "250pc Assorted", price: 399, type: "Components", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "250 assorted resistors & caps for pedal building." },
+  // Components — organized by subCat
+  { id: 201, name: "TL072", ref: "Dual Op-Amp", price: 29, type: "Components", subCat: "ICs", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Low-noise dual JFET op-amp. The workhorse of pedal circuits — used in overdrives, buffers, and active filters.", specs: "DIP-8 package, supply up to ±18V, low noise 18nV/√Hz" },
+  { id: 202, name: "ATTINY13A", ref: "Microcontroller", price: 59, type: "Components", subCat: "ICs", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "8-bit AVR microcontroller for digital control in pedals. Programmable relay bypass, tap tempo, preset switching.", specs: "DIP-8, 1KB flash, 64B SRAM, 9.6MHz internal oscillator" },
+  { id: 203, name: "JRC4558D", ref: "Dual Op-Amp", price: 39, type: "Components", subCat: "ICs", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "The original Tube Screamer IC. Warm, slightly compressed character that defines the TS-808 sound.", specs: "DIP-8, dual op-amp, gain bandwidth 3MHz" },
+  { id: 204, name: "PT2399", ref: "Delay IC", price: 49, type: "Components", subCat: "ICs", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Echo processor IC for analog-voiced delay effects. Up to 600ms delay time, built-in ADC/DAC.", specs: "DIP-16, 44.1kHz sampling, internal VCO, low power" },
+  { id: 205, name: "LM13700", ref: "Dual OTA", price: 69, type: "Components", subCat: "ICs", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Dual operational transconductance amplifier for phasers, compressors, and VCAs.", specs: "DIP-16, dual OTA with linearizing diodes and buffers" },
+  { id: 206, name: "NE5532", ref: "Dual Op-Amp", price: 25, type: "Components", subCat: "ICs", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "High-performance low-noise dual op-amp. Great for audio buffers and active EQ.", specs: "DIP-8, 10MHz GBW, 5nV/√Hz noise, high slew rate" },
+  { id: 210, name: "2N5457", ref: "N-Ch JFET", price: 35, type: "Components", subCat: "Transistors", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "N-channel JFET for input buffers and gain stages. Used in Klon, Timmy, and countless boutique pedals.", specs: "TO-92, Vgs(off) -0.5 to -6V, Idss 1-5mA" },
+  { id: 211, name: "BC108", ref: "NPN Silicon", price: 19, type: "Components", subCat: "Transistors", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Classic NPN silicon transistor. The heart of British-style fuzz circuits.", specs: "TO-18 metal can, hFE 110-800, Ic 100mA" },
+  { id: 212, name: "2N3904", ref: "NPN General Purpose", price: 9, type: "Components", subCat: "Transistors", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "General purpose NPN transistor. Boosts, buffers, switching. Incredibly versatile.", specs: "TO-92, hFE 100-300, Ic 200mA, Ft 300MHz" },
+  { id: 213, name: "MPSA18", ref: "NPN High Gain", price: 15, type: "Components", subCat: "Transistors", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "High-gain NPN for clean boost and preamp circuits. Very low noise.", specs: "TO-92, hFE 500-1500, low noise, Ic 200mA" },
+  { id: 220, name: "1N4148", ref: "Signal Diode", price: 5, type: "Components", subCat: "Diodes", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Fast-switching signal diode. Used for clipping in overdrives and distortions.", specs: "DO-35, 100V, 200mA, 4ns switching" },
+  { id: 221, name: "1N914", ref: "Signal Diode", price: 5, type: "Components", subCat: "Diodes", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "General purpose signal diode, functionally identical to 1N4148. Symmetric clipping.", specs: "DO-35, 100V, 200mA" },
+  { id: 222, name: "1N34A", ref: "Germanium Diode", price: 29, type: "Components", subCat: "Diodes", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Germanium diode for soft, asymmetric clipping. Essential for Klon-style circuits.", specs: "DO-7, germanium, ~0.3V forward voltage" },
+  { id: 223, name: "1N5817", ref: "Schottky Diode", price: 9, type: "Components", subCat: "Diodes", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Schottky barrier diode for polarity protection and low-drop rectification.", specs: "DO-41, 20V, 1A, 0.45V forward drop" },
+  { id: 230, name: "5mm LED Red", ref: "Indicator", price: 5, type: "Components", subCat: "Optical", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Standard 5mm red LED for bypass indicator. Bright, low current draw.", specs: "5mm, red, 2V forward, 20mA, diffused lens" },
+  { id: 231, name: "5mm LED Blue", ref: "Indicator", price: 9, type: "Components", subCat: "Optical", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "5mm blue LED. Looks great on dark enclosures.", specs: "5mm, blue, 3.2V forward, 20mA, water clear" },
+  { id: 232, name: "LDR 5528", ref: "Light Dependent Resistor", price: 19, type: "Components", subCat: "Optical", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Photoresistor for optical tremolo and compressor circuits (vactrol builds).", specs: "5mm, 10-20kΩ light, 1MΩ dark" },
+  { id: 240, name: "78L09", ref: "9V Regulator", price: 15, type: "Components", subCat: "Voltage Regulators", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "9V positive voltage regulator. Clean, regulated power for your pedal.", specs: "TO-92, 9V output, 100mA, dropout 1.7V" },
+  { id: 241, name: "7660S", ref: "Charge Pump", price: 49, type: "Components", subCat: "Voltage Regulators", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Voltage inverter/doubler IC. Converts 9V to 18V for extra headroom (Klon, Timmy).", specs: "DIP-8, charge pump, up to 12V input" },
+  { id: 250, name: "DPDT Toggle Switch", ref: "Mini Toggle", price: 39, type: "Components", subCat: "Switches", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Mini DPDT toggle for mode switching — clipping selector, mid-hump, etc.", specs: "DPDT, ON-ON, PCB mount, 6 pin" },
+  { id: 251, name: "3PDT Footswitch", ref: "Stomp Switch", price: 89, type: "Components", subCat: "Switches", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Heavy-duty true bypass footswitch. The standard for pedal builds.", specs: "3PDT, 9 pin, solder lug, rated 10K cycles" },
+  { id: 252, name: "4-Position Rotary", ref: "Rotary Switch", price: 59, type: "Components", subCat: "Switches", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "4-position rotary switch for clipping diode selection. Used in Trinity Drive.", specs: "1P4T, PCB mount, 6mm shaft" },
+  { id: 260, name: "B10K Pot", ref: "Linear 10K", price: 25, type: "Components", subCat: "Potentiometers", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "10K linear pot. Used for tone controls and blend circuits.", specs: "16mm, linear taper, 6mm shaft, PCB mount" },
+  { id: 261, name: "A100K Pot", ref: "Audio 100K", price: 25, type: "Components", subCat: "Potentiometers", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "100K audio/log pot. Standard volume and gain control.", specs: "16mm, audio taper, 6mm shaft, PCB mount" },
+  { id: 262, name: "B500K Pot", ref: "Linear 500K", price: 25, type: "Components", subCat: "Potentiometers", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "500K linear pot for fuzz and high-impedance circuits.", specs: "16mm, linear taper, 6mm shaft" },
+  { id: 270, name: "10K Trimpot", ref: "Bourns 3362P", price: 15, type: "Components", subCat: "Trimpots", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "10K single-turn trimpot for internal bias adjustments.", specs: "Top-adjust, 10K, single turn, PCB mount" },
+  { id: 271, name: "100K Trimpot", ref: "Bourns 3362P", price: 15, type: "Components", subCat: "Trimpots", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "100K trimpot for gain trimming and bias setting.", specs: "Top-adjust, 100K, single turn" },
+  { id: 280, name: "6.35mm Mono Jack", ref: "Switchcraft Style", price: 29, type: "Components", subCat: "Jacks", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Standard 1/4\" mono phone jack for input/output. Open frame, panel mount.", specs: "6.35mm, mono, 2-conductor, panel mount" },
+  { id: 281, name: "2.1mm DC Jack", ref: "Power Input", price: 15, type: "Components", subCat: "Jacks", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Standard center-negative DC barrel jack for 9V power.", specs: "2.1mm barrel, panel mount, center negative" },
+  { id: 290, name: "DIP-8 Socket", ref: "IC Socket", price: 5, type: "Components", subCat: "Sockets", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "8-pin DIP IC socket. Always socket your ICs for easy swapping.", specs: "DIP-8, machined pins, gold contact" },
+  { id: 291, name: "DIP-16 Socket", ref: "IC Socket", price: 9, type: "Components", subCat: "Sockets", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "16-pin DIP socket for PT2399, LM13700, and other larger ICs.", specs: "DIP-16, machined pins" },
+  { id: 300, name: "100nF Film Cap (10pc)", ref: "WIMA MKS2", price: 49, type: "Components", subCat: "Capacitors", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Pack of 10 WIMA 100nF polyester film caps. The most-used value in pedal builds.", specs: "100nF, 63V, 5mm pitch, polyester film" },
+  { id: 301, name: "47uF Electrolytic (10pc)", ref: "Nichicon", price: 29, type: "Components", subCat: "Capacitors", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Pack of 10 Nichicon 47uF electrolytic caps for power filtering.", specs: "47uF, 25V, radial, Nichicon" },
+  { id: 310, name: "Resistor Kit 1/4W (250pc)", ref: "Metal Film", price: 199, type: "Components", subCat: "Resistors", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "250-piece 1/4W metal film resistor kit. 25 values × 10pc, all common pedal values.", specs: "1/4W, 1% tolerance, metal film, axial" },
+  { id: 320, name: "Enclosure 1590B", ref: "Pre-drilled", price: 349, type: "Components", subCat: "Enclosures", effectCat: "Utility", difficulty: "Beginner", tag: "Popular", image: "", desc: "Powder-coated aluminum 1590B enclosure, pre-drilled for 3-knob layouts.", specs: "112×60×31mm, die-cast aluminum, powder coated" },
+  { id: 321, name: "Enclosure 1590BB", ref: "Pre-drilled", price: 449, type: "Components", subCat: "Enclosures", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Larger 1590BB for complex builds like Trinity Drive.", specs: "120×95×34mm, die-cast aluminum" },
+  { id: 330, name: "Knob Set (6pc)", ref: "Davies 1900h", price: 199, type: "Components", subCat: "Hardware", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "6 fluted pointer knobs. Fits standard 6mm shaft pots.", specs: "Davies 1900h clone, black, 6mm shaft" },
+  { id: 331, name: "9V Power Supply", ref: "Regulated PSU", price: 499, type: "Components", subCat: "Hardware", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "Clean regulated 9V DC supply with 5 daisy-chain cables.", specs: "9V DC, 1A, center-negative, regulated" },
+  { id: 332, name: "Hookup Wire Kit", ref: "22 AWG Solid", price: 149, type: "Components", subCat: "Hardware", effectCat: "Utility", difficulty: "Beginner", tag: "", image: "", desc: "5-color hookup wire kit for pedal wiring. 22AWG solid core.", specs: "22 AWG, solid core, 5 colors × 3m" },
 ];
+
+const COMPONENT_CATEGORIES = [
+  { name: "ICs", count: 0 },
+  { name: "Transistors", count: 0 },
+  { name: "Diodes", count: 0 },
+  { name: "Optical", count: 0 },
+  { name: "Voltage Regulators", count: 0 },
+  { name: "Switches", count: 0 },
+  { name: "Potentiometers", count: 0 },
+  { name: "Trimpots", count: 0 },
+  { name: "Jacks", count: 0 },
+  { name: "Sockets", count: 0 },
+  { name: "Capacitors", count: 0 },
+  { name: "Resistors", count: 0 },
+  { name: "Enclosures", count: 0 },
+  { name: "Hardware", count: 0 },
+];
+// Auto-count products per category
+COMPONENT_CATEGORIES.forEach(c => { c.count = PRODUCTS.filter(p => p.type === "Components" && p.subCat === c.name).length; });
 
 const STEPS = [
   { num: "01", title: "Select Circuit", desc: "Choose your tone from our curated PCB library", icon: "sliders" },
@@ -302,7 +354,7 @@ function Nav({ cartCount, page, setPage, onSearch }) {
 function Hero({ setPage }) {
   return (
     <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", padding: "140px 24px 80px", position: "relative", overflow: "hidden" }}>
-      {/*Full-bleed background image — place your photo at /public/hero-bg.jpg */}
+      {/* Full-bleed background image — place your photo at /public/hero-bg.jpg */}
       <div style={{ position: "absolute", inset: 0 }}>
         <img src="/hero-bg.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} onError={e => { e.target.style.display = "none"; }} />
       </div>
@@ -335,7 +387,9 @@ function FeaturedRow({ title, products, addToCart }) {
       <div style={{ position: "relative" }}>
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(v, products.length)},1fr)`, gap: 18 }}>
           {products.slice(off, off + v).map(p => (
-            <div key={p.id} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", cursor: "pointer" }} onClick={() => addToCart(p)}>
+            <div key={p.id} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", cursor: "pointer" }} onClick={() => addToCart(p)}
+              onMouseOver={e => e.currentTarget.style.borderColor = C.borderLight}
+              onMouseOut={e => e.currentTarget.style.borderColor = C.border}>
               <ProductImage product={p} height={150} />
               <div style={{ padding: "12px 14px" }}>
                 <div style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: C.white, textTransform: "uppercase", marginBottom: 3, lineHeight: 1.4 }}>{p.name}</div>
@@ -426,7 +480,7 @@ function Rad({ checked, onChange, label: l }) {
 }
 
 /* ══ SHOP ══ */
-function ShopPage({ addToCart, initialType = "", initialSearch = "", searchId = 0 }) {
+function ShopPage({ addToCart, initialType = "", initialSearch = "", searchId = 0, setPage }) {
   const [search, setSearch] = useState(initialSearch);
   const [eCat, setECat] = useState([]);
   const [tFilt, setTFilt] = useState(initialType ? [initialType] : []);
@@ -478,7 +532,7 @@ function ShopPage({ addToCart, initialType = "", initialSearch = "", searchId = 
     <section style={{ paddingTop: 92 }}>
       <div style={{ textAlign: "center", padding: "64px 24px 48px", borderBottom: `1px solid ${C.border}` }}>
         <h1 style={{ ...hdg, fontSize: "clamp(36px,6vw,56px)", marginBottom: 16 }}>CIRCUIT CATALOG</h1>
-        <div style={{ fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "3px", marginBottom: 20 }}>HOME / SHOP / DIY KITS / ANALOG CIRCUITS</div>
+        <Breadcrumb items={[{ label: "Home", page: "home" }, { label: "Shop", page: "shop" }, { label: initialType === "PCB" ? "PCBs" : initialType === "Full Kit" ? "Kits" : "All Circuits" }]} setPage={setPage} />
       </div>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px clamp(16px,4vw,48px)" }}>
         <div className="mfb"><button onClick={() => setMobF(!mobF)} style={{ ...btnO, width: "100%", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px 16px" }}><Icon name="sliders" size={16} /> FILTERS {ac > 0 ? `(${ac})` : ""}</button></div>
@@ -518,7 +572,8 @@ function ShopPage({ addToCart, initialType = "", initialSearch = "", searchId = 
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
                 {res.map(p => (
-                  <div key={p.id} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", transition: "border-color 0.3s" }}
+                  <div key={p.id} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", transition: "border-color 0.3s", cursor: "pointer" }}
+                    onClick={() => setPage("product:" + p.id)}
                     onMouseOver={e => e.currentTarget.style.borderColor = C.borderLight}
                     onMouseOut={e => e.currentTarget.style.borderColor = C.border}>
                     <ProductImage product={p} height={140} />
@@ -531,7 +586,7 @@ function ShopPage({ addToCart, initialType = "", initialSearch = "", searchId = 
                         <span style={{ fontFamily: mono, fontSize: 9, color: C.textDim, background: "rgba(255,255,255,0.05)", padding: "2px 5px", borderRadius: 2 }}>{p.difficulty}</span>
                       </div>
                       <div style={{ fontFamily: mono, fontSize: 14, color: C.accent, fontWeight: 700, marginBottom: 10 }}>{"\u20B9"}{p.price.toLocaleString("en-IN")}</div>
-                      <button onClick={() => addToCart(p)} style={{ width: "100%", fontFamily: mono, fontSize: 10, letterSpacing: "2px", textTransform: "uppercase", padding: "9px 0", background: "transparent", color: C.accent, border: `1px solid ${C.border}`, cursor: "pointer", transition: "all 0.3s" }}
+                      <button onClick={e => { e.stopPropagation(); addToCart(p); }} style={{ width: "100%", fontFamily: mono, fontSize: 10, letterSpacing: "2px", textTransform: "uppercase", padding: "9px 0", background: "transparent", color: C.accent, border: `1px solid ${C.border}`, cursor: "pointer", transition: "all 0.3s" }}
                         onMouseOver={e => { e.target.style.background = C.white; e.target.style.color = C.bg; }}
                         onMouseOut={e => { e.target.style.background = "transparent"; e.target.style.color = C.accent; }}>
                         {p.type === "PCB" ? "ADD PCB" : p.type === "Full Kit" ? "INITIALIZE BUILD" : "ADD TO CART"}
@@ -774,6 +829,189 @@ function ContactPage() {
   );
 }
 
+/* ══ COMPONENTS BROWSE — category grid like PedalPCB ══ */
+function ComponentsBrowsePage({ setPage }) {
+  return (
+    <section style={{ paddingTop: 92 }}>
+      <div style={{ textAlign: "center", padding: "64px 24px 48px", borderBottom: `1px solid ${C.border}` }}>
+        <h1 style={{ ...hdg, fontSize: "clamp(36px,6vw,56px)", marginBottom: 16 }}>COMPONENTS</h1>
+        <Breadcrumb items={[{ label: "Home", page: "home" }, { label: "Components" }]} setPage={setPage} />
+      </div>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px clamp(16px,4vw,48px)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 20 }}>
+          {COMPONENT_CATEGORIES.map(cat => (
+            <div key={cat.name} onClick={() => setPage("comp:" + cat.name)} style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: "24px 16px", textAlign: "center", cursor: "pointer", transition: "all 0.3s" }}
+              onMouseOver={e => { e.currentTarget.style.borderColor = C.borderLight; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseOut={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = "translateY(0)"; }}>
+              <PedalGraphic seed={COMPONENT_CATEGORIES.indexOf(cat)} height={120} />
+              <div style={{ fontFamily: mono, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: "1px", textTransform: "uppercase", marginTop: 16, marginBottom: 4 }}>{cat.name}</div>
+              <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "2px" }}>{cat.count} PRODUCT{cat.count !== 1 ? "S" : ""}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══ COMPONENTS LIST — products within a subcategory ══ */
+function ComponentsListPage({ subCat, addToCart, setPage }) {
+  const items = PRODUCTS.filter(p => p.type === "Components" && p.subCat === subCat);
+  return (
+    <section style={{ paddingTop: 92 }}>
+      <div style={{ textAlign: "center", padding: "64px 24px 48px", borderBottom: `1px solid ${C.border}` }}>
+        <h1 style={{ ...hdg, fontSize: "clamp(28px,5vw,44px)", marginBottom: 16 }}>{subCat.toUpperCase()}</h1>
+        <Breadcrumb items={[{ label: "Home", page: "home" }, { label: "Components", page: "components" }, { label: subCat }]} setPage={setPage} />
+      </div>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px clamp(16px,4vw,48px)" }}>
+        <div style={{ fontFamily: mono, fontSize: 12, color: C.textDim, marginBottom: 24 }}>{items.length} product{items.length !== 1 ? "s" : ""}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 18 }}>
+          {items.map(p => (
+            <div key={p.id} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", transition: "border-color 0.3s", cursor: "pointer" }}
+              onMouseOver={e => e.currentTarget.style.borderColor = C.borderLight}
+              onMouseOut={e => e.currentTarget.style.borderColor = C.border}
+              onClick={() => setPage("product:" + p.id)}>
+              <ProductImage product={p} height={140} />
+              <div style={{ padding: "14px 16px" }}>
+                {p.tag && <div style={{ fontFamily: mono, fontSize: 9, letterSpacing: "2px", color: "#60a5fa", marginBottom: 4, textTransform: "uppercase" }}>{p.tag}</div>}
+                <div style={{ fontFamily: mono, fontSize: 13, fontWeight: 700, color: C.white, marginBottom: 2 }}>{p.name}</div>
+                <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, marginBottom: 8 }}>{p.ref}</div>
+                <div style={{ fontFamily: mono, fontSize: 15, color: C.accent, fontWeight: 700, marginBottom: 12 }}>{"\u20B9"}{p.price.toLocaleString("en-IN")}</div>
+                <button onClick={e => { e.stopPropagation(); addToCart(p); }} style={{ width: "100%", fontFamily: mono, fontSize: 10, letterSpacing: "2px", textTransform: "uppercase", padding: "10px 0", background: "transparent", color: C.accent, border: `1px solid ${C.border}`, cursor: "pointer", transition: "all 0.3s" }}
+                  onMouseOver={e => { e.target.style.background = C.white; e.target.style.color = C.bg; }}
+                  onMouseOut={e => { e.target.style.background = "transparent"; e.target.style.color = C.accent; }}>ADD TO CART</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══ PRODUCT DETAIL PAGE ══ */
+function ProductDetailPage({ productId, addToCart, setPage }) {
+  const product = PRODUCTS.find(p => p.id === parseInt(productId));
+  const [qty, setQty] = useState(1);
+  if (!product) return <Placeholder title="PRODUCT NOT FOUND" desc="This product doesn't exist or has been removed." />;
+
+  // Build breadcrumb path based on product type
+  const crumbs = [{ label: "Home", page: "home" }];
+  if (product.type === "Components") {
+    crumbs.push({ label: "Components", page: "components" });
+    if (product.subCat) crumbs.push({ label: product.subCat, page: "comp:" + product.subCat });
+  } else if (product.type === "PCB") {
+    crumbs.push({ label: "PCBs", page: "pcbs" });
+  } else if (product.type === "Full Kit") {
+    crumbs.push({ label: "Kits", page: "kits" });
+  }
+  crumbs.push({ label: product.name });
+
+  // Related products (same subCat or effectCat, excluding self)
+  const related = PRODUCTS.filter(p => p.id !== product.id && (
+    (product.subCat && p.subCat === product.subCat) || (p.effectCat === product.effectCat && p.type === product.type)
+  )).slice(0, 4);
+
+  return (
+    <section style={{ paddingTop: 92 }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "32px clamp(16px,4vw,48px) 80px" }}>
+        {/* Breadcrumb */}
+        <div style={{ marginBottom: 32 }}>
+          <Breadcrumb items={crumbs} setPage={setPage} />
+        </div>
+
+        {/* Product layout */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }} className="sg">
+          {/* Image */}
+          <div>
+            <ProductImage product={product} height={360} />
+          </div>
+
+          {/* Info */}
+          <div>
+            <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8 }}>{product.type}{product.subCat ? ` / ${product.subCat}` : ""}</div>
+            <h1 style={{ fontFamily: sans, fontSize: 32, fontWeight: 700, color: C.white, letterSpacing: "1px", margin: "0 0 4px" }}>{product.name}</h1>
+            <div style={{ fontFamily: mono, fontSize: 14, color: C.textMuted, marginBottom: 20 }}>{product.ref}</div>
+
+            {product.tag && <span style={{ fontFamily: mono, fontSize: 10, letterSpacing: "2px", padding: "4px 12px", background: product.tag === "New" ? "rgba(74,222,128,0.1)" : product.tag === "Bestseller" ? "rgba(245,158,11,0.1)" : "rgba(96,165,250,0.1)", color: product.tag === "New" ? "#4ade80" : product.tag === "Bestseller" ? "#f59e0b" : "#60a5fa", border: `1px solid ${product.tag === "New" ? "rgba(74,222,128,0.2)" : product.tag === "Bestseller" ? "rgba(245,158,11,0.2)" : "rgba(96,165,250,0.2)"}`, display: "inline-block", marginBottom: 20 }}>{product.tag.toUpperCase()}</span>}
+
+            <div style={{ fontFamily: mono, fontSize: 28, color: C.white, fontWeight: 700, marginBottom: 24 }}>{"\u20B9"}{product.price.toLocaleString("en-IN")}</div>
+
+            <p style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 1.8, marginBottom: 24 }}>{product.desc}</p>
+
+            {/* Specs */}
+            {product.specs && (
+              <div style={{ background: C.bgCard, border: `1px solid ${C.border}`, padding: "16px 20px", marginBottom: 24 }}>
+                <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8 }}>SPECIFICATIONS</div>
+                <div style={{ fontFamily: mono, fontSize: 12, color: C.textMuted, lineHeight: 1.8 }}>{product.specs}</div>
+              </div>
+            )}
+
+            {/* Difficulty */}
+            {product.difficulty && (
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+                <span style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "1px" }}>DIFFICULTY:</span>
+                <span style={{ fontFamily: mono, fontSize: 12, color: C.accent, fontWeight: 700 }}>{product.difficulty}</span>
+              </div>
+            )}
+
+            {/* Quantity + Add to cart */}
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", border: `1px solid ${C.border}` }}>
+                <button onClick={() => setQty(Math.max(1, qty - 1))} style={{ width: 40, height: 40, background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="minus" size={16} /></button>
+                <span style={{ width: 40, textAlign: "center", fontFamily: mono, fontSize: 14, color: C.white }}>{qty}</span>
+                <button onClick={() => setQty(qty + 1)} style={{ width: 40, height: 40, background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="plus" size={16} /></button>
+              </div>
+              <button onClick={() => { for (let i = 0; i < qty; i++) addToCart(product); }} style={{ flex: 1, ...btnO, background: C.white, color: C.bg, fontWeight: 700, textAlign: "center", border: "none", padding: "14px 32px" }}>ADD TO CART</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Related products */}
+        {related.length > 0 && (
+          <div style={{ marginTop: 64, borderTop: `1px solid ${C.border}`, paddingTop: 48 }}>
+            <h3 style={{ ...hdg, fontSize: 20, marginBottom: 24 }}>RELATED PRODUCTS</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 18 }}>
+              {related.map(p => (
+                <div key={p.id} onClick={() => setPage("product:" + p.id)} style={{ background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden", cursor: "pointer", transition: "border-color 0.3s" }}
+                  onMouseOver={e => e.currentTarget.style.borderColor = C.borderLight}
+                  onMouseOut={e => e.currentTarget.style.borderColor = C.border}>
+                  <ProductImage product={p} height={120} />
+                  <div style={{ padding: "12px 14px" }}>
+                    <div style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: C.white, textTransform: "uppercase", marginBottom: 2 }}>{p.name}</div>
+                    <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, marginBottom: 6 }}>{p.ref}</div>
+                    <div style={{ fontFamily: mono, fontSize: 13, color: C.accent, fontWeight: 700 }}>{"\u20B9"}{p.price.toLocaleString("en-IN")}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ══ BREADCRUMB ══ */
+function Breadcrumb({ items, setPage }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+      {items.map((item, i) => (
+        <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {i > 0 && <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>/</span>}
+          {item.page ? (
+            <button onClick={() => setPage(item.page)} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: mono, fontSize: 11, color: C.textMuted, letterSpacing: "2px", textTransform: "uppercase", padding: 0, transition: "color 0.2s" }}
+              onMouseOver={e => e.target.style.color = C.white}
+              onMouseOut={e => e.target.style.color = C.textMuted}>{item.label}</button>
+          ) : (
+            <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "2px", textTransform: "uppercase" }}>{item.label}</span>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 /* ══ PLACEHOLDER ══ */
 function Placeholder({ title, desc }) {
   return <section style={{ paddingTop: 140, textAlign: "center", maxWidth: 600, margin: "0 auto", padding: "140px 24px 80px" }}><h1 style={{ ...hdg, fontSize: 36, marginBottom: 16 }}>{title}</h1><p style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 1.8 }}>{desc}</p></section>;
@@ -963,7 +1201,7 @@ export default function Home() {
   const [navSearch, setNavSearch] = useState("");
   const [searchId, setSearchId] = useState(0);
   const handleSearch = (term) => { setNavSearch(term); setSearchId(c => c + 1); setPage("shop"); };
-  const handleSetPage = (p) => { if (p !== "shop" && p !== "pcbs" && p !== "kits" && p !== "components") setNavSearch(""); setPage(p); };
+  const handleSetPage = (p) => { if (!p.startsWith("shop") && !p.startsWith("pcbs") && !p.startsWith("kits") && !p.startsWith("comp:")) setNavSearch(""); setPage(p); };
   const showToast = m => { setToast({ msg: m, visible: true }); setTimeout(() => setToast({ msg: "", visible: false }), 2200); };
   const addToCart = p => { setCart(prev => { const e = prev.find(i => i.product.id === p.id); if (e) return prev.map(i => i.product.id === p.id ? { ...i, qty: i.qty + 1 } : i); return [...prev, { product: p, qty: 1 }]; }); showToast(`${p.name} added`); };
   const updateQty = (id, q) => { if (q < 1) setCart(p => p.filter(i => i.product.id !== id)); else setCart(p => p.map(i => i.product.id === id ? { ...i, qty: q } : i)); };
@@ -984,7 +1222,10 @@ export default function Home() {
       <Nav cartCount={cc} page={page} setPage={handleSetPage} onSearch={handleSearch} />
       <Toast message={toast.msg} visible={toast.visible} />
       {page === "home" && <><Hero setPage={handleSetPage} /><HomeFeatured addToCart={addToCart} /><SignalPath /></>}
-      {(page === "shop" || page === "pcbs" || page === "kits" || page === "components") && <ShopPage addToCart={addToCart} initialType={page === "pcbs" ? "PCB" : page === "kits" ? "Full Kit" : page === "components" ? "Components" : ""} initialSearch={navSearch} searchId={searchId} />}
+      {(page === "shop" || page === "pcbs" || page === "kits") && <ShopPage addToCart={addToCart} initialType={page === "pcbs" ? "PCB" : page === "kits" ? "Full Kit" : ""} initialSearch={navSearch} searchId={searchId} setPage={handleSetPage} />}
+      {page === "components" && <ComponentsBrowsePage setPage={handleSetPage} />}
+      {page.startsWith("comp:") && <ComponentsListPage subCat={page.split(":")[1]} addToCart={addToCart} setPage={handleSetPage} />}
+      {page.startsWith("product:") && <ProductDetailPage productId={page.split(":")[1]} addToCart={addToCart} setPage={handleSetPage} />}
       {page === "cart" && <CartPage cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} setPage={handleSetPage} />}
       {page === "checkout" && <CheckoutPage cart={cart} setPage={handleSetPage} />}
       {page === "about" && <AboutPage />}
