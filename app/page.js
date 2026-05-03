@@ -363,7 +363,7 @@ function Hero({ setPage }) {
 
       <div style={{ position: "relative", zIndex: 1 }}>
         <h1 style={{ fontFamily: sans, fontSize: "clamp(48px,10vw,100px)", fontWeight: 700, letterSpacing: "8px", color: C.white, lineHeight: 1, margin: "0 0 24px", textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}>ANALOG ANGRIFF</h1>
-        <p style={{ fontFamily: mono, fontSize: "clamp(13px,1.4vw,16px)", color: "rgba(255,255,255,0.75)", maxWidth: 600, lineHeight: 1.7, margin: "0 auto 48px" }}>Premium DIY guitar pedal kits engineered for the Indian musician. Build your sound from the circuit up.</p>
+        <p style={{ fontFamily: mono, fontSize: "clamp(13px,1.4vw,16px)", color: "rgba(255,255,255,0.75)", maxWidth: 600, lineHeight: 1.7, margin: "0 auto 48px" }}>Premium DIY guitar pedal kits for musicians and tone enthusiasts. Build your sound from the circuit up.</p>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
           <button onClick={() => setPage("shop")} style={{ ...btnO, background: C.white, color: C.bg, border: "none", fontWeight: 700 }}>BROWSE CATALOG</button>
           <button onClick={() => setPage("about")} style={{ ...btnO, borderColor: "rgba(255,255,255,0.3)" }}>OUR STORY</button>
@@ -700,41 +700,56 @@ function CheckoutPage({ cart, setPage }) {
 }
 
 /* ══ ABOUT PAGE ══ */
-function AboutPage() {
+function AboutPage({ setPage }) {
   return (
-    <section style={{ paddingTop: 120, maxWidth: 800, margin: "0 auto", padding: "120px 24px 80px" }}>
-      {/* Page header banner */}
-      <div style={{ textAlign: "center", padding: "40px 24px 48px", marginBottom: 48, borderBottom: `1px solid ${C.border}`, background: `linear-gradient(180deg, rgba(40,55,90,0.2) 0%, transparent 100%)`, margin: "-20px -24px 48px", padding: "60px 24px 48px" }}>
-        <h1 style={{ ...hdg, fontSize: "clamp(36px,6vw,52px)", marginBottom: 0 }}>About</h1>
+    <section style={{ paddingTop: 92 }}>
+      {/* Header */}
+      <div style={{ padding: "12px clamp(16px,4vw,48px)", maxWidth: 1100, margin: "0 auto" }}>
+        <Breadcrumb items={[{ label: "Home", page: "home" }, { label: "About" }]} setPage={setPage} />
       </div>
 
-      <div style={{ maxWidth: 650, margin: "0 auto" }}>
-        <h2 style={{ fontFamily: sans, fontSize: 32, fontWeight: 600, color: C.white, letterSpacing: "1px", marginBottom: 32 }}>Why we exist</h2>
-
-        <div style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, lineHeight: 2 }}>
+      {/* Story + Photo — AionFX style layout */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px clamp(16px,4vw,48px) 80px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, alignItems: "start" }} className="sg">
+        {/* Story */}
+        <div style={{ fontFamily: mono, fontSize: 14, color: C.textMuted, lineHeight: 2 }}>
           <p style={{ marginBottom: 20 }}>
-            Analog Angriff started because buying guitar pedals in India is expensive, and building
-            them from scratch is confusing {"\u2014"} sourcing components from five different shops, decoding
-            cryptic schematics, hoping the PCB you etched actually works.
+            We all started somewhere. I believe anyone can build a guitar pedal {"\u2014"} there is no rocket science involved. If you can hold a soldering iron, you can build tone.
           </p>
           <p style={{ marginBottom: 20 }}>
-            We package everything you need into a single kit: a proper through-hole PCB, every
-            component sorted and labeled, a pre-drilled enclosure, and a build guide that assumes
-            {"you've"} never soldered before.
+            I started building pedals around 2012 during my engineering college days, following articles on{" "}
+            <a href="https://www.diystompboxes.com" target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa", textDecoration: "none" }}>DIY Stompboxes</a>,{" "}
+            <a href="http://www.tonepad.com" target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa", textDecoration: "none" }}>Tonepad</a>, and{" "}
+            <a href="http://www.generalguitargadgets.com" target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa", textDecoration: "none" }}>General Guitar Gadgets</a>. By 2013 I was designing my own circuits and selling my first boards.
           </p>
           <p style={{ marginBottom: 20 }}>
-            Every circuit we sell is based on proven, classic designs {"\u2014"} Tube Screamers, Klon
-            variants, PT2399 delays, Big Muff fuzzes {"\u2014"} tweaked for reliability with modern,
-            easily-sourced components.
+            I always loved how it felt building a pedal {"\u2014"} the focus of placing each component, the smell of solder, and the pure joy of hearing sound come through after a successful build. That feeling has to be experienced by every musician and tone enthusiast.
           </p>
-          <p style={{ color: C.accent, borderLeft: `3px solid ${C.accent}`, paddingLeft: 20, marginTop: 32, marginBottom: 32, fontStyle: "italic" }}>
+          <p style={{ marginBottom: 20 }}>
+            {"That's"} what Analog Angriff is about. We package everything you need into a single kit: a proper through-hole PCB, every component sorted and labeled, a pre-drilled enclosure, and a build guide that assumes {"you've"} never soldered before.
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            Every circuit we sell is based on proven, classic designs {"\u2014"} Tube Screamers, Klon variants, PT2399 delays, Big Muff fuzzes {"\u2014"} tweaked for reliability with modern, easily-sourced components.
+          </p>
+          <p style={{ marginBottom: 20 }}>
+            I do all this from a tiny table in my apartment, just to share the joy of building things. My wife helps get things done for the website and packing orders {"\u2014"} {"it's"} truly a two-person operation built on passion, not funding.
+          </p>
+          <p style={{ color: C.accent, borderLeft: `3px solid ${C.accent}`, paddingLeft: 20, marginTop: 32, fontStyle: "italic" }}>
             {'"Angriff" is German for "attack." It\'s the front edge of your signal. The moment pick meets string and electrons start moving. We\'re here to help you shape what happens next.'}
           </p>
         </div>
 
-        {/* What's in a kit */}
-        <div style={{ marginTop: 48, padding: 32, background: C.bgCard, border: `1px solid ${C.border}` }}>
-          <h3 style={{ fontFamily: mono, fontSize: 13, fontWeight: 700, color: C.white, letterSpacing: "2px", marginBottom: 20, textTransform: "uppercase" }}>{"What's in every kit"}</h3>
+        {/* Photo — place your photo at /public/about-photo.jpg */}
+        <div style={{ position: "sticky", top: 120 }}>
+          <div style={{ width: "100%", aspectRatio: "3/4", background: C.bgCard, border: `1px solid ${C.border}`, overflow: "hidden" }}>
+            <img src="/about-photo.jpg" alt="Building pedals" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={e => { e.target.style.display = "none"; e.target.parentElement.innerHTML = '<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;text-align:center"><span style="font-size:48px">\uD83C\uDFB8</span><span style="font-family:monospace;font-size:11px;color:#5a6378;letter-spacing:2px">YOUR PHOTO HERE</span><span style="font-family:monospace;font-size:10px;color:#3a4560">Place about-photo.jpg in /public/</span></div>'; }} />
+          </div>
+        </div>
+      </div>
+
+      {/* What's in a kit */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 clamp(16px,4vw,48px) 80px" }}>
+        <div style={{ padding: 32, background: C.bgCard, border: `1px solid ${C.border}`, marginBottom: 32 }}>
+          <h3 style={{ fontFamily: mono, fontSize: 13, fontWeight: 700, color: C.white, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 20 }}>{"What's in every kit"}</h3>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {["Through-hole PCB", "All resistors & capacitors", "Semiconductors (ICs, diodes, transistors)", "Potentiometers & knobs", "Pre-drilled enclosure", "Jacks, switches & LED", "Hook-up wire", "Step-by-step build guide (PDF)"].map((item, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: mono, fontSize: 11, color: C.textMuted }}>
@@ -745,8 +760,7 @@ function AboutPage() {
           </div>
         </div>
 
-        {/* Quality specs */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginTop: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
           {[
             { label: "PCB Finish", value: "HASL Lead-Free" },
             { label: "Board Thickness", value: "1.6mm FR4" },
@@ -791,8 +805,8 @@ function ContactPage() {
             <div style={{ fontFamily: mono, fontSize: 13, color: C.white }}>Usually within a few hours on WhatsApp. Email replies within 24 hours.</div>
           </div>
           <div style={{ marginTop: 16, padding: 20, background: C.bgCard, border: `1px solid ${C.border}` }}>
-            <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "2px", marginBottom: 8, textTransform: "uppercase" }}>Location</div>
-            <div style={{ fontFamily: mono, fontSize: 13, color: C.white }}>Bengaluru, India</div>
+            <div style={{ fontFamily: mono, fontSize: 10, color: C.textDim, letterSpacing: "2px", marginBottom: 8, textTransform: "uppercase" }}>Ships From</div>
+            <div style={{ fontFamily: mono, fontSize: 13, color: C.white }}>Planet Earth</div>
           </div>
         </div>
 
@@ -1199,7 +1213,7 @@ function Footer() {
         {[{ t: "SHOP", l: ["PCBs", "Kits", "Components"] }, { t: "COMMUNITY", l: ["Forum", "Instagram", "YouTube"] }, { t: "COMPANY", l: ["About", "Contact", "Privacy Policy"] }].map((c, i) => <div key={i}><h4 style={{ ...lbl, marginBottom: 24 }}>{c.t}</h4>{c.l.map(x => <div key={x} style={{ fontFamily: mono, fontSize: 13, color: C.textMuted, marginBottom: 14, cursor: "pointer" }}>{x}</div>)}</div>)}
       </div>
       <div style={{ padding: "24px clamp(16px,4vw,48px)", borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, maxWidth: 1200, margin: "0 auto" }}>
-        <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "3px" }}>DESIGNED IN INDIA</span>
+        <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim, letterSpacing: "3px" }}>DESIGNED ON PLANET EARTH FOR HUMANS</span>
         <span style={{ fontFamily: mono, fontSize: 11, color: C.textDim }}>{"\u00A9"} 2026 ANALOGANGRIFF</span>
       </div>
     </footer>
@@ -1245,9 +1259,9 @@ export default function Home() {
       {page.startsWith("product:") && <ProductDetailPage productId={page.split(":")[1]} addToCart={addToCart} setPage={handleSetPage} />}
       {page === "cart" && <CartPage cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} setPage={handleSetPage} />}
       {page === "checkout" && <CheckoutPage cart={cart} setPage={handleSetPage} />}
-      {page === "about" && <AboutPage />}
+      {page === "about" && <AboutPage setPage={handleSetPage} />}
       {page === "contact" && <ContactPage />}
-      {page === "forum" && <Placeholder title="FORUM" desc="Community discussion board for builders across India. Share your builds, ask questions, help others. Coming soon." />}
+      {page === "forum" && <Placeholder title="FORUM" desc="Community discussion board for pedal builders. Share your builds, ask questions, help others. Coming soon." />}
       {page === "signin" && <AccountPage setPage={handleSetPage} view="orders" />}
       {page === "profile" && <AccountPage setPage={handleSetPage} view="profile" />}
       <Footer />
